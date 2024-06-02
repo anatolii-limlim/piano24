@@ -6,7 +6,7 @@
 #include "../../rtmidi/RtMidi.h"
 #include "../threads.h"
  
-int midiin_thread( SafeQueue<MidiOutQueueElem> q_in_midiout )
+void midiin_thread( SafeQueue<MidiOutQueueElem> &q_in_midiout )
 {
   RtMidiIn *midiin = new RtMidiIn();
   std::vector<unsigned char> message;
@@ -25,22 +25,26 @@ int midiin_thread( SafeQueue<MidiOutQueueElem> q_in_midiout )
   midiin->ignoreTypes( false, false, false );
  
   // Periodically check input queue.
-  std::cout << "Reading MIDI from port ... quit with Ctrl-C.\n";
+  std::cout << "Reading MIDI from port...\n";
   while ( true ) {
     stamp = midiin->getMessage( &message );
     nBytes = message.size();
-    for ( i=0; i<nBytes; i++ )
-      std::cout << "Byte " << i << " = " << (int)message[i] << ", ";
-    if ( nBytes > 0 )
-      std::cout << "stamp = " << stamp << std::endl;
- 
-    // Sleep for 1 millisecond ... platform-dependent.
-    sleep( 0.001 );
+    
+    if ( nBytes > 0 ) {
+      for ( i=0; i<nBytes; i++ )
+        std::cout << "Byte " << i << " = " << (int)message[i] << ", ";
+      if ( nBytes > 0 )
+        std::cout << "stamp = " << stamp << std::endl;
+  
+      MidiOutQueueElem elem { type: MidiIn, byte0: message[0], byte1: message[1], byte2: message[2] };
+      q_in_midiout.enqueue(elem);
+    }
+
+    // Sleep for 1/2 millisecond ... platform-dependent.
+    sleep( 0.0005 );
   }
  
   // Clean up
  cleanup:
   delete midiin;
- 
-  return 0;
 }

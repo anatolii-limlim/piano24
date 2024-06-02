@@ -2,17 +2,18 @@
 
 #include "safe_queue.h"
 
+enum MidiOutQueueElemType { MidiIn, Pitch };
+
 struct MidiOutQueueElem {
-    enum MidiOutInputType { MidiIn, Pitch };
-    MidiOutInputType type; 
+    MidiOutQueueElemType type; 
     
     // if type == MidiIn
-    std::byte byte1, byte2, byte3;
+    unsigned char byte0, byte1, byte2;
     
     // if type == Pitch
-    std::byte note;
+    unsigned char note;
     double pitch;
 };
 
-void midiin_thread();
-void midiout_thread();
+void midiin_thread( SafeQueue<MidiOutQueueElem> &q_in_midiout );
+void midiout_thread( SafeQueue<MidiOutQueueElem> &queue_in );
