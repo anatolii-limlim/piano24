@@ -24,8 +24,6 @@ cc_library(
     name = "rtmidi",
     srcs = ["RtMidi.cpp"],
     hdrs = ["RtMidi.h"],
-    deps = [
-        "@lasound//:lasound",
-        "@lpthread//:lpthread",
-    ]
+    deps = [],
+    linkopts = ["-lasound", "-pthread"],
 )

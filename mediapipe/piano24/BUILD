@@ -11,7 +11,7 @@ package(default_visibility = [
 # (or similar nvidia/amd equivalent)
 cc_binary(
     name = "piano24",
-    srcs = ["app.cc"],
+    srcs = ["midiprobe.cc"],
     data = [
         "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
         "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
@@ -35,6 +35,6 @@ cc_binary(
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/log:absl_log",
         "//mediapipe/piano24/threads:threads",
-        # "//mediapipe/piano24/rtmidi:rtmidi",
+        "//mediapipe/piano24/rtmidi:rtmidi",
     ]
 )
