@@ -34,7 +34,7 @@ struct MidiOutQueueElem {
 void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout );
 void midiout_thread( SafeQueue<MidiOutQueueElem>& queue_in );
 absl::Status cam_input_thread();
-absl::Status hand_tracking_thread();
+absl::Status hand_tracking_thread( std::string& graph_config_file );
 
 #define MAX_FRAMES 10
 
