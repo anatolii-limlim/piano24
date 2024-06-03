@@ -1,3 +1,5 @@
+#include <time.h>
+
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
@@ -39,7 +41,8 @@ absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<Han
   while (true) {
     HandTrackingQueueElem event = queue_in.dequeue();
     cv::Mat* camera_frame = frames_data.get_frame(event.frame_index);
-    std::cout << "<<< " << event.frame_index << "\n";
+
+    double start_time = clock();
       
     // Wrap Mat into an ImageFrame.
     auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
@@ -97,7 +100,9 @@ absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<Han
     else
       cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
 
-    std::cout << "<<<SHOW " << event.frame_index << "\n";
+    frames_data.erase();
+
+    std::cout << "HT FRAME " << event.frame_index << " " << (clock() - start_time) / CLOCKS_PER_SEC << "\n";
     cv::imshow(kWindowName, output_frame_mat);
   }
 
