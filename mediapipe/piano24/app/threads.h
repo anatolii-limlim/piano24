@@ -18,6 +18,8 @@
 
 #include "safe_queue.h"
 
+int app_main(int argc, char** argv);
+
 struct HandTrackingQueueElem {
   int frame_index;
 };

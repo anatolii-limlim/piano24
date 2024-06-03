@@ -1,12 +1,12 @@
 #include <iostream>
 #include <thread>
 
-#include "threads/threads.h"
+#include "threads.h"
 
 ABSL_FLAG(std::string, calculator_graph_config_file, "",
           "Name of file containing text format CalculatorGraphConfig proto.");
 
-int main(int argc, char** argv) {
+int app_main(int argc, char** argv) {
   std::cout << "Hello World!\nQuit with Ctrl-C.\n";
 
   absl::ParseCommandLine(argc, argv);
