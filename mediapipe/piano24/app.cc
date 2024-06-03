@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   absl::ParseCommandLine(argc, argv);
   std::string graph_config_file = absl::GetFlag(FLAGS_calculator_graph_config_file);
 
-  SafeQueue<MidiOutQueueElem> q_in_midiout;
+  SafeQueue<MidiEmitterQueueElem> q_in_midiout;
   SafeQueue<HandTrackingQueueElem> q_in_hand_tracking;
 
   // std::thread t_midi_in(midiin_thread, std::ref(q_in_midiout));

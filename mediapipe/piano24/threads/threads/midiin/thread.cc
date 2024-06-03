@@ -6,7 +6,7 @@
 #include "../../../rtmidi/RtMidi.h"
 #include "../../threads.h"
  
-void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout )
+void midiin_thread( SafeQueue<MidiEmitterQueueElem>& q_in_midiout )
 {
   RtMidiIn *midiin = new RtMidiIn();
   std::vector<unsigned char> message;
@@ -36,7 +36,7 @@ void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout )
       if ( nBytes > 0 )
         std::cout << "stamp = " << stamp << std::endl;
   
-      MidiOutQueueElem elem { type: MidiIn, byte0: message[0], byte1: message[1], byte2: message[2] };
+      MidiEmitterQueueElem elem { type: MidiIn, byte0: message[0], byte1: message[1], byte2: message[2] };
       q_in_midiout.enqueue(elem);
     }
 

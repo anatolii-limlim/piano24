@@ -22,10 +22,10 @@ struct HandTrackingQueueElem {
   int frame_index;
 };
 
-enum MidiOutQueueElemType { MidiIn, Pitch };
+enum MidiEmitterQueueElemType { MidiIn, Pitch };
 
-struct MidiOutQueueElem {
-  MidiOutQueueElemType type; 
+struct MidiEmitterQueueElem {
+  MidiEmitterQueueElemType type; 
 
   // if type == MidiIn
   unsigned char byte0, byte1, byte2;
@@ -35,8 +35,8 @@ struct MidiOutQueueElem {
   double pitch;
 };
 
-void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout );
-void midiout_thread( SafeQueue<MidiOutQueueElem>& queue_in );
+void midiin_thread( SafeQueue<MidiEmitterQueueElem>& q_in_midiout );
+void midiout_thread( SafeQueue<MidiEmitterQueueElem>& queue_in );
 absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_tracking );
 absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& queue_in );
 
