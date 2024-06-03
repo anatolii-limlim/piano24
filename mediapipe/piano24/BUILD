@@ -11,7 +11,7 @@ package(default_visibility = [
 # (or similar nvidia/amd equivalent)
 cc_binary(
     name = "piano24",
-    srcs = ["app.cc"],
+    srcs = ["main.cc"],
     data = [
         "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
         "//mediapipe/modules/palm_detection:palm_detection_full.tflite",

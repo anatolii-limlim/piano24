@@ -4,7 +4,7 @@
 #include "threads/threads.h"
 
 int main(int argc, char** argv) {
-  std::cout << "Hello World!\nquit with Ctrl-C.\n";
+  std::cout << "Hello World!\nQuit with Ctrl-C.\n";
 
   SafeQueue<MidiOutQueueElem> q_in_midiout;
 
