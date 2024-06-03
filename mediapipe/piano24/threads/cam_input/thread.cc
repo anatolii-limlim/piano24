@@ -25,10 +25,10 @@ void cam_input_thread() {
       ABSL_LOG(INFO) << "Empty frame, end of video reached.";
       break;
     }
-    cv::Mat camera_frame;
-    cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGBA);
+    cv::Mat* camera_frame = new cv::Mat();
+    cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGBA);
     if (!load_video) {
-      cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+      cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
     }
   }
 }

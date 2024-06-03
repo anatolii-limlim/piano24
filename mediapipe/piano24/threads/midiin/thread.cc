@@ -6,7 +6,7 @@
 #include "../../rtmidi/RtMidi.h"
 #include "../threads.h"
  
-void midiin_thread( SafeQueue<MidiOutQueueElem> &q_in_midiout )
+void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout )
 {
   RtMidiIn *midiin = new RtMidiIn();
   std::vector<unsigned char> message;
