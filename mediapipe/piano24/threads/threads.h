@@ -35,10 +35,10 @@ struct MidiEmitterQueueElem {
   double pitch;
 };
 
-void midiin_thread( SafeQueue<MidiEmitterQueueElem>& q_in_midiout );
-void midiout_thread( SafeQueue<MidiEmitterQueueElem>& queue_in );
-absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_tracking );
-absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& queue_in );
+void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
+void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
+absl::Status camera_source_thread( SafeQueue<HandTrackingQueueElem>& q_hand_tracking );
+absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& q_hand_tracking );
 
 #define MAX_FRAMES 10
 

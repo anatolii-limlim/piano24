@@ -2,9 +2,9 @@
 
 #include "../../threads.h";
 
-void midiout_thread( SafeQueue<MidiEmitterQueueElem>& queue_in ) {
+void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter ) {
     while (true) {
-        MidiEmitterQueueElem event = queue_in.dequeue();
+        MidiEmitterQueueElem event = q_midi_emitter.dequeue();
         std::cout << (int)event.byte0 << " " << (int)event.byte1 << " " << (int)event.byte2 << "\n";
     }
 }

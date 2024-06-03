@@ -1,6 +1,6 @@
 #include "../../threads.h"
 
-absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_tracking ) {
+absl::Status camera_source_thread( SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
   ABSL_LOG(INFO) << "Initialize the camera.";
   cv::VideoCapture capture;
   capture.open(0);
@@ -23,7 +23,7 @@ absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_track
     int index = frames_data.add_frame(camera_frame);
 
     std::cout << "HHHHHHHHHHHHHHHHH " << index << "\n";
-    q_in_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
+    q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
   }
 
   return absl::Status();

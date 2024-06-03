@@ -10,7 +10,7 @@ constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
 constexpr char kWindowName[] = "MediaPipe";
 
-absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& queue_in ) {
+absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
   ABSL_LOG(INFO) << "Hand tracking start, graph: " << graph_config_file;
 
   std::string calculator_graph_config_contents;
@@ -39,7 +39,7 @@ absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<Han
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
   while (true) {
-    HandTrackingQueueElem event = queue_in.dequeue();
+    HandTrackingQueueElem event = q_hand_tracking.dequeue();
     cv::Mat* camera_frame = frames_data.get_frame(event.frame_index);
 
     double start_time = clock();

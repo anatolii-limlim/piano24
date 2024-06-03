@@ -6,7 +6,7 @@
 #include "../../../rtmidi/RtMidi.h"
 #include "../../threads.h"
  
-void midiin_thread( SafeQueue<MidiEmitterQueueElem>& q_in_midiout )
+void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter )
 {
   RtMidiIn *midiin = new RtMidiIn();
   std::vector<unsigned char> message;
@@ -37,7 +37,7 @@ void midiin_thread( SafeQueue<MidiEmitterQueueElem>& q_in_midiout )
         std::cout << "stamp = " << stamp << std::endl;
   
       MidiEmitterQueueElem elem { type: MidiIn, byte0: message[0], byte1: message[1], byte2: message[2] };
-      q_in_midiout.enqueue(elem);
+      q_midi_emitter.enqueue(elem);
     }
 
     // Sleep for 1/2 millisecond ... platform-dependent.
