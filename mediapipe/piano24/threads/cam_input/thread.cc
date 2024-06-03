@@ -1,6 +1,6 @@
 #include "../threads.h"
 
-absl::Status cam_input_thread() {
+absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_tracking ) {
   ABSL_LOG(INFO) << "Initialize the camera.";
   cv::VideoCapture capture;
   capture.open(0);

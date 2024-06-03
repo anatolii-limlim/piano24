@@ -8,7 +8,7 @@ constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
 constexpr char kWindowName[] = "MediaPipe";
 
-absl::Status hand_tracking_thread( std::string& graph_config_file ) {
+absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& queue_in ) {
   ABSL_LOG(INFO) << "Hand tracking start, graph: " << graph_config_file;
 
   std::string calculator_graph_config_contents;
@@ -35,6 +35,12 @@ absl::Status hand_tracking_thread( std::string& graph_config_file ) {
   MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller,
                       graph.AddOutputStreamPoller(kOutputStream));
   MP_RETURN_IF_ERROR(graph.StartRun({}));
+
+  while (true) {
+      HandTrackingQueueElem event = queue_in.dequeue();
+      
+      
+  }
 
   return absl::Status();
 }

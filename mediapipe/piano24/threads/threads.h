@@ -18,6 +18,10 @@
 
 #include "safe_queue.h"
 
+struct HandTrackingQueueElem {
+  int frame_index;
+};
+
 enum MidiOutQueueElemType { MidiIn, Pitch };
 
 struct MidiOutQueueElem {
@@ -33,8 +37,8 @@ struct MidiOutQueueElem {
 
 void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout );
 void midiout_thread( SafeQueue<MidiOutQueueElem>& queue_in );
-absl::Status cam_input_thread();
-absl::Status hand_tracking_thread( std::string& graph_config_file );
+absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_tracking );
+absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& queue_in );
 
 #define MAX_FRAMES 10
 
