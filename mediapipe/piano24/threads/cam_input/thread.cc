@@ -1,6 +1,6 @@
 #include "../threads.h"
 
-void cam_input_thread() {
+absl::Status cam_input_thread() {
   ABSL_LOG(INFO) << "Initialize the camera or load the video.";
   cv::VideoCapture capture;
   capture.open(0);

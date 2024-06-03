@@ -1,5 +1,7 @@
 #include "threads.h"
 
+FramesData frames_data;
+
 int FramesData::add_frame(cv::Mat* frame) {
   m.lock();
 
