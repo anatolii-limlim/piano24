@@ -1,7 +1,7 @@
 #include "../threads.h"
 
 absl::Status cam_input_thread() {
-  ABSL_LOG(INFO) << "Initialize the camera or load the video.";
+  ABSL_LOG(INFO) << "Initialize the camera.";
   cv::VideoCapture capture;
   capture.open(0);
   RET_CHECK(capture.isOpened());
@@ -22,4 +22,6 @@ absl::Status cam_input_thread() {
 
     frames_data.add_frame(camera_frame);
   }
+
+  return absl::Status();
 }
