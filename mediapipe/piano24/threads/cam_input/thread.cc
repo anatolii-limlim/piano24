@@ -20,7 +20,10 @@ absl::Status cam_input_thread( SafeQueue<HandTrackingQueueElem>& q_in_hand_track
     cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGBA);
     cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
 
-    frames_data.add_frame(camera_frame);
+    int index = frames_data.add_frame(camera_frame);
+
+    std::cout << "HHHHHHHHHHHHHHHHH " << index << "\n";
+    q_in_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
   }
 
   return absl::Status();

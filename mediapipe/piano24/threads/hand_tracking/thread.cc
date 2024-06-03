@@ -37,9 +37,68 @@ absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<Han
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
   while (true) {
-      HandTrackingQueueElem event = queue_in.dequeue();
+    HandTrackingQueueElem event = queue_in.dequeue();
+    cv::Mat* camera_frame = frames_data.get_frame(event.frame_index);
+    std::cout << "<<< " << event.frame_index << "\n";
       
-      
+    // Wrap Mat into an ImageFrame.
+    auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
+        mediapipe::ImageFormat::SRGBA, camera_frame->cols, camera_frame->rows,
+        mediapipe::ImageFrame::kGlDefaultAlignmentBoundary);
+    cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+    camera_frame->copyTo(input_frame_mat);
+
+    // Prepare and add graph input packet.
+    size_t frame_timestamp_us =
+        (double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
+    MP_RETURN_IF_ERROR(
+        gpu_helper.RunInGlContext([&input_frame, &frame_timestamp_us, &graph,
+                                   &gpu_helper]() -> absl::Status {
+          // Convert ImageFrame to GpuBuffer.
+          auto texture = gpu_helper.CreateSourceTexture(*input_frame.get());
+          auto gpu_frame = texture.GetFrame<mediapipe::GpuBuffer>();
+          glFlush();
+          texture.Release();
+          // Send GPU image packet into the graph.
+          MP_RETURN_IF_ERROR(graph.AddPacketToInputStream(
+              kInputStream, mediapipe::Adopt(gpu_frame.release())
+                                .At(mediapipe::Timestamp(frame_timestamp_us))));
+          return absl::OkStatus();
+        }));
+
+    // Get the graph result packet, or stop if that fails.
+    mediapipe::Packet packet;
+    if (!poller.Next(&packet)) break;
+    std::unique_ptr<mediapipe::ImageFrame> output_frame;
+
+    // Convert GpuBuffer to ImageFrame.
+    MP_RETURN_IF_ERROR(gpu_helper.RunInGlContext(
+        [&packet, &output_frame, &gpu_helper]() -> absl::Status {
+          auto& gpu_frame = packet.Get<mediapipe::GpuBuffer>();
+          auto texture = gpu_helper.CreateSourceTexture(gpu_frame);
+          output_frame = absl::make_unique<mediapipe::ImageFrame>(
+              mediapipe::ImageFormatForGpuBufferFormat(gpu_frame.format()),
+              gpu_frame.width(), gpu_frame.height(),
+              mediapipe::ImageFrame::kGlDefaultAlignmentBoundary);
+          gpu_helper.BindFramebuffer(texture);
+          const auto info = mediapipe::GlTextureInfoForGpuBufferFormat(
+              gpu_frame.format(), 0, gpu_helper.GetGlVersion());
+          glReadPixels(0, 0, texture.width(), texture.height(), info.gl_format,
+                       info.gl_type, output_frame->MutablePixelData());
+          glFlush();
+          texture.Release();
+          return absl::OkStatus();
+        }));
+
+    // Convert back to opencv for display or saving.
+    cv::Mat output_frame_mat = mediapipe::formats::MatView(output_frame.get());
+    if (output_frame_mat.channels() == 4)
+      cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGBA2BGR);
+    else
+      cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
+
+    std::cout << "<<<SHOW " << event.frame_index << "\n";
+    cv::imshow(kWindowName, output_frame_mat);
   }
 
   return absl::Status();
