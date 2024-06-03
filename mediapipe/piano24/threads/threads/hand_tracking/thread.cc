@@ -4,7 +4,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 
-#include "../threads.h"
+#include "../../threads.h"
 
 constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";

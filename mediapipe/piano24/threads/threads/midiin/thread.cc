@@ -3,8 +3,8 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include "../../rtmidi/RtMidi.h"
-#include "../threads.h"
+#include "../../../rtmidi/RtMidi.h"
+#include "../../threads.h"
  
 void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout )
 {
