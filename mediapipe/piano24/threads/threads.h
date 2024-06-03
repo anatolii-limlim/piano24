@@ -33,6 +33,7 @@ struct MidiOutQueueElem {
 
 void midiin_thread( SafeQueue<MidiOutQueueElem>& q_in_midiout );
 void midiout_thread( SafeQueue<MidiOutQueueElem>& queue_in );
+void cam_input_thread();
 
 #define MAX_FRAMES 10
 
@@ -46,3 +47,5 @@ class FramesData {
     void erase(void);
     cv::Mat* get_frame(int index);    
 };
+
+FramesData frames_data;
