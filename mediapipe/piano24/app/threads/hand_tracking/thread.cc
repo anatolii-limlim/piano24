@@ -10,12 +10,12 @@ constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
 constexpr char kWindowName[] = "MediaPipe";
 
-absl::Status hand_tracking_thread( std::string graph_config_file, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
-  ABSL_LOG(INFO) << "Hand tracking start, graph: " << graph_config_file;
+absl::Status hand_tracking_thread( Settings& settings, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
+  ABSL_LOG(INFO) << "Hand tracking start, graph: " << settings.graph_config_path;
 
   std::string calculator_graph_config_contents;
   MP_RETURN_IF_ERROR(mediapipe::file::GetContents(
-      graph_config_file,
+      settings.graph_config_path,
       &calculator_graph_config_contents));
   ABSL_LOG(INFO) << "Get calculator graph config contents: "
                  << calculator_graph_config_contents;
@@ -102,7 +102,7 @@ absl::Status hand_tracking_thread( std::string graph_config_file, SafeQueue<Hand
 
     frames_data.erase();
 
-    std::cout << "HT FRAME " << event.frame_index << " " << (clock() - start_time) / CLOCKS_PER_SEC << "\n";
+    std::cout << "HANDS TRACKED #" << event.frame_index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";
     cv::imshow(kWindowName, output_frame_mat);
   }
 

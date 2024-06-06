@@ -1,4 +1,4 @@
 {
   "graph_config_path": "mediapipe/graphs/hand_tracking/hand_tracking_desktop_live_gpu.pbtxt",
-  "video_file_path": ""
+  "video_file_path": "mediapipe/piano24/docs/test_1.mp4"
 }
