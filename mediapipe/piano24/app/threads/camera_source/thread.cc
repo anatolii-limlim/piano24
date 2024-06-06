@@ -1,6 +1,10 @@
 #include "../../threads.h"
 
-absl::Status camera_source_thread( Settings& settings, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
+absl::Status camera_source_thread(
+  Settings& settings,
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
+  SafeQueue<ArucoDetectQueueElem>& q_aruco
+) {
   ABSL_LOG(INFO) << "Initialize the camera.";
   cv::VideoCapture capture;
   const bool is_load_video = !settings.video_file_path.empty();
@@ -33,6 +37,7 @@ absl::Status camera_source_thread( Settings& settings, SafeQueue<HandTrackingQue
 
     std::cout << "NEW FRAME #" << index << "\n";
     q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
+    q_aruco.enqueue(ArucoDetectQueueElem { frame_index: index });
 
     if (is_load_video) {
       sleep(1);

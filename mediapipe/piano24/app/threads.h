@@ -60,14 +60,14 @@ void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
 void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
 absl::Status camera_source_thread(
   Settings& settings,
-  SafeQueue<HandTrackingQueueElem>& q_hand_tracking
-  // SafeQueue<ArucoDetectQueueElem>& q_aruco
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
+  SafeQueue<ArucoDetectQueueElem>& q_aruco
 );
 absl::Status hand_tracking_thread(
   Settings& settings,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking
 );
-void aruco_detect(
+void aruco_detection_thread(
   SafeQueue<ArucoDetectQueueElem>& q_aruco
 );
 
