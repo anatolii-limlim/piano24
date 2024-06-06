@@ -24,6 +24,23 @@ struct HandTrackingQueueElem {
   int frame_index;
 };
 
+enum ArucoDetectQueueElemType { NewFrame, OneDetected };
+
+struct ArucoDetectQueueElem {
+  ArucoDetectQueueElemType type;
+
+  // if type == NewFrame || type == OneDetected
+  int frame_index;
+  // if type == OneDetected
+  int aruco_index;
+  int x, y;
+};
+
+struct ArucoDetectOneQueueElem {
+  int frame_index;
+  int x, y, w, h;  // coordinated of area to search
+};
+
 enum MidiEmitterQueueElemType { MidiIn, Pitch };
 
 struct MidiEmitterQueueElem {
@@ -31,7 +48,6 @@ struct MidiEmitterQueueElem {
 
   // if type == MidiIn
   unsigned char byte0, byte1, byte2;
-
   // if type == Pitch
   unsigned char note;
   double pitch;
@@ -39,8 +55,24 @@ struct MidiEmitterQueueElem {
 
 void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
 void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
-absl::Status camera_source_thread( SafeQueue<HandTrackingQueueElem>& q_hand_tracking );
-absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& q_hand_tracking );
+absl::Status camera_source_thread(
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking
+  // SafeQueue<ArucoDetectQueueElem>& q_aruco
+);
+absl::Status hand_tracking_thread(
+  std::string graph_config_file,
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking
+);
+void aruco_detect(
+  SafeQueue<ArucoDetectQueueElem>& q_aruco,
+  SafeQueue<ArucoDetectOneQueueElem>& q_aruco_one_1,
+  SafeQueue<ArucoDetectOneQueueElem>& q_aruco_one_2,
+  SafeQueue<ArucoDetectOneQueueElem>& q_aruco_one_3
+);
+void aruco_detect_one(
+  SafeQueue<ArucoDetectQueueElem>& q_aruco,
+  SafeQueue<ArucoDetectQueueElem>& q_aruco_1
+);
 
 #define MAX_FRAMES 10
 
@@ -57,3 +89,14 @@ class FramesData {
 
 extern FramesData frames_data;
 
+#define ARUCO_CORNER 8
+#define ARUCO_LONG 9
+#define ARUCO_SHORT 47
+
+class Settings {
+  public:
+    std::string graph_config_path;
+    std::string video_file_path;
+
+    void load_file( std::string file_name );    
+};

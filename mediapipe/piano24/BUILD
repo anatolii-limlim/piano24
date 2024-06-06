@@ -11,7 +11,7 @@ package(default_visibility = [
 # (or similar nvidia/amd equivalent)
 cc_binary(
     name = "piano24",
-    srcs = ["aruco_generate.cc"],
+    srcs = ["main.cc"],
     data = [
         "//mediapipe/modules/hand_landmark:hand_landmark_full.tflite",
         "//mediapipe/modules/palm_detection:palm_detection_full.tflite",
@@ -38,5 +38,5 @@ cc_binary(
         "//mediapipe/piano24/app:app",
         "//mediapipe/piano24/rtmidi:rtmidi",
     ],
-    linkopts = ["-lopencv_aruco"],
+    linkopts = ["-lopencv_aruco", "-ljsoncpp"],
 )

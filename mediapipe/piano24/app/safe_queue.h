@@ -42,6 +42,23 @@ public:
     return val;
   }
 
+  T dequeue_all()
+  {
+    std::unique_lock<std::mutex> lock(m);
+    while(q.empty())
+    {
+      // release lock as long as the wait and reaquire it afterwards.
+      c.wait(lock);
+    }
+    T val;
+    while(!q.empty())
+    {
+      val = q.front();
+      q.pop();
+    }
+    return val;
+  }
+
 private:
   std::queue<T> q;
   mutable std::mutex m;

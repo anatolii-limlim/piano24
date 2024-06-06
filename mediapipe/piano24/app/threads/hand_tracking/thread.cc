@@ -10,7 +10,7 @@ constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
 constexpr char kWindowName[] = "MediaPipe";
 
-absl::Status hand_tracking_thread( std::string& graph_config_file, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
+absl::Status hand_tracking_thread( std::string graph_config_file, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
   ABSL_LOG(INFO) << "Hand tracking start, graph: " << graph_config_file;
 
   std::string calculator_graph_config_contents;
