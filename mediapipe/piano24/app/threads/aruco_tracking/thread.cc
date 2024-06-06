@@ -18,10 +18,10 @@ void aruco_detection_thread(
 
   while (true) {
     ArucoDetectQueueElem event = q_aruco.dequeue_all();
-    // cv::Mat camera_frame = *frames_data.get_frame(event.frame_index);
-    // if (camera_frame == NULL) {
-    //   continue;
-    // }
+    cv::Mat* camera_frame = frames_data.get_frame(event.frame_index);
+    if (camera_frame == NULL) {
+      continue;
+    }
 
     double start_time = clock();
     
@@ -30,8 +30,7 @@ void aruco_detection_thread(
       markerCorners.clear();
       rejectedCandidates.clear();
 
-      // cv::aruco::detectMarkers(*camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
-
+      cv::aruco::detectMarkers(*camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
     } else {
 
     }
