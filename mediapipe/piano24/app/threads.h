@@ -86,6 +86,7 @@ class FramesData {
 
 extern FramesData frames_data;
 
-#define ARUCO_CORNER 8
-#define ARUCO_LONG 9
-#define ARUCO_SHORT 47
+#define ARUCO_START 8
+#define ARUCO_END 47
+
+#define ARUCO_RELATIVE_DW 30
