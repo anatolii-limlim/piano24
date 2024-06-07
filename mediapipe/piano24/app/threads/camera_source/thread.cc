@@ -34,7 +34,7 @@ absl::Status camera_source_thread(
     }    
     cv::Mat* camera_frame = new cv::Mat();
     cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGBA);
-    cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
+    // cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
 
     if (is_load_video) {
       cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_RGBA2RGB);

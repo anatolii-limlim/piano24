@@ -1,4 +1,7 @@
 {
   "graph_config_path": "mediapipe/graphs/hand_tracking/hand_tracking_desktop_live_gpu.pbtxt",
-  "video_file_path": "mediapipe/piano24/docs/test_1.mp4"
+  "video_file_path": "mediapipe/piano24/docs/test_1.mp4",
+  "aruco_relative_max_d": 30,
+  "target_fps": 240,
+  "admin_app_fps": 2
 }

@@ -24,6 +24,9 @@ class Settings {
   public:
     std::string graph_config_path;
     std::string video_file_path;
+    int aruco_relative_max_d;
+    int target_fps;
+    int admin_app_fps;
 
     void load_file( std::string file_name );    
 };
@@ -82,6 +85,7 @@ class FramesData {
     int add_frame(cv::Mat* frame);
     void erase(void);
     cv::Mat* get_frame(int index);    
+    cv::Mat* get_last_frame();    
 };
 
 extern FramesData frames_data;

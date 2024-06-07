@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <unistd.h>
 
 #include "threads.h"
 
@@ -24,7 +25,18 @@ int app_main(int argc, char** argv) {
   std::thread t_hand_tracking(hand_tracking_thread, std::ref(settings), std::ref(q_hand_tracking));
   std::thread t_aruco_detection(aruco_detection_thread, std::ref(q_aruco));
   
-  t_midi_source.join();
+  while (true) {
+    double start_time = clock();
+
+    cv::Mat *frame = frames_data.get_last_frame();
+
+    if (frame != NULL) {
+      cv::imshow("Piano24", *frame);
+      cv::waitKey(1);
+    }
+
+    usleep((1.0 / settings.admin_app_fps - (clock() - start_time) / CLOCKS_PER_SEC) * 1000000);
+  }
 
   return 0;    
 }
