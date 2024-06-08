@@ -7,6 +7,7 @@
 
 void pose_detection_thread(
   Settings& settings,
+  FramesData& frames_data,
   SafeQueue<PoseDetectQueueElem>& q_pose
 ) {
   bool relative_search = false;

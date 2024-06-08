@@ -2,6 +2,7 @@
 
 absl::Status camera_source_thread(
   Settings& settings,
+  FramesData& frames_data,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
   SafeQueue<PoseDetectQueueElem>& q_pose
 ) {

@@ -9,7 +9,11 @@
 constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
 
-absl::Status hand_tracking_thread( Settings& settings, SafeQueue<HandTrackingQueueElem>& q_hand_tracking ) {
+absl::Status hand_tracking_thread(
+  Settings& settings,
+  FramesData& frames_data,
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking
+) {
   ABSL_LOG(INFO) << "Hand tracking start, graph: " << settings.graph_config_path;
 
   std::string calculator_graph_config_contents;

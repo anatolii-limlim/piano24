@@ -31,6 +31,29 @@ class Settings {
     void load_file( std::string file_name );    
 };
 
+#define MAX_FRAMES 10
+
+struct Frame {
+  cv::Mat *mat;
+  std::vector<int> markerIds;
+  std::vector<std::vector<cv::Point2f>> markerCorners;
+  double camera_fps;  
+  double hand_tracking_fps;  
+  double pose_fps;
+};
+
+class FramesData {
+  std::mutex m;
+  std::map<int, Frame> frames;
+  int next_frame_index = 0;
+
+  public:
+    int add_frame(cv::Mat* frame);
+    void erase(void);
+    Frame* get_frame(int index);    
+    Frame* get_last_frame();    
+};
+
 struct HandTrackingQueueElem {
   int frame_index;
 };
@@ -55,42 +78,20 @@ void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
 void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
 absl::Status camera_source_thread(
   Settings& settings,
+  FramesData& frames_data,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
   SafeQueue<PoseDetectQueueElem>& q_pose
 );
 absl::Status hand_tracking_thread(
   Settings& settings,
+  FramesData& frames_data,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking
 );
 void pose_detection_thread(
   Settings& settings,
+  FramesData& frames_data,
   SafeQueue<PoseDetectQueueElem>& q_pose
 );
-
-#define MAX_FRAMES 10
-
-struct Frame {
-  cv::Mat *mat;
-  std::vector<int> markerIds;
-  std::vector<std::vector<cv::Point2f>> markerCorners;
-  double camera_fps;  
-  double hand_tracking_fps;  
-  double pose_fps;
-};
-
-class FramesData {
-  std::mutex m;
-  std::map<int, Frame> frames;
-  int next_frame_index = 0;
-
-  public:
-    int add_frame(cv::Mat* frame);
-    void erase(void);
-    Frame* get_frame(int index);    
-    Frame* get_last_frame();    
-};
-
-extern FramesData frames_data;
 
 #define ARUCO_START 8
 #define ARUCO_END 47
