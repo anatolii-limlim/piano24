@@ -6,6 +6,7 @@
 #include "../../threads.h"
 
 void pose_detection_thread(
+  Settings& settings,
   SafeQueue<PoseDetectQueueElem>& q_pose
 ) {
   bool relative_search = false;
@@ -31,10 +32,10 @@ void pose_detection_thread(
     if (relative_search) {
       for (int i = 0; i < markerIds.size(); i++) {
         cv::Rect bbox = cv::boundingRect(markerCorners[i]);
-        bbox.x -= ARUCO_RELATIVE_DW;
-        bbox.y -= ARUCO_RELATIVE_DW;
-        bbox.width += 2 * ARUCO_RELATIVE_DW;
-        bbox.height += 2 * ARUCO_RELATIVE_DW;
+        bbox.x -= settings.aruco_relative_max_d;
+        bbox.y -= settings.aruco_relative_max_d;
+        bbox.width += 2 * settings.aruco_relative_max_d;
+        bbox.height += 2 * settings.aruco_relative_max_d;
 
         std::vector<int> rMarkerIds;
         std::vector<std::vector<cv::Point2f>> rMarkerCorners, rRejectedCandidates;

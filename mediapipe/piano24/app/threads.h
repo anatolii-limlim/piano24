@@ -63,6 +63,7 @@ absl::Status hand_tracking_thread(
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking
 );
 void pose_detection_thread(
+  Settings& settings,
   SafeQueue<PoseDetectQueueElem>& q_pose
 );
 
@@ -93,5 +94,3 @@ extern FramesData frames_data;
 
 #define ARUCO_START 8
 #define ARUCO_END 47
-
-#define ARUCO_RELATIVE_DW 30
