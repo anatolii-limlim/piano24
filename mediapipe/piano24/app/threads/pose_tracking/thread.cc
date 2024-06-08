@@ -5,8 +5,8 @@
 
 #include "../../threads.h"
 
-void aruco_detection_thread(
-  SafeQueue<ArucoDetectQueueElem>& q_aruco
+void pose_detection_thread(
+  SafeQueue<PoseDetectQueueElem>& q_pose
 ) {
   bool relative_search = false;
 
@@ -19,7 +19,7 @@ void aruco_detection_thread(
   cv::Mat image = cv::imread("mediapipe/piano24/docs/aruco0.png", 0);
 
   while (true) {
-    ArucoDetectQueueElem event = q_aruco.dequeue_all();
+    PoseDetectQueueElem event = q_pose.dequeue_all();
     Frame* frame = frames_data.get_frame(event.frame_index);
     if (frame == NULL) {
       continue;

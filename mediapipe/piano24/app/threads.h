@@ -35,16 +35,8 @@ struct HandTrackingQueueElem {
   int frame_index;
 };
 
-enum ArucoDetectQueueElemType { NewFrame, OneDetected };
-
-struct ArucoDetectQueueElem {
-  ArucoDetectQueueElemType type;
-
-  // if type == NewFrame || type == OneDetected
+struct PoseDetectQueueElem {
   int frame_index;
-  // if type == OneDetected
-  int aruco_index;
-  int x, y;
 };
 
 enum MidiEmitterQueueElemType { MidiIn, Pitch };
@@ -64,14 +56,14 @@ void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
 absl::Status camera_source_thread(
   Settings& settings,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
-  SafeQueue<ArucoDetectQueueElem>& q_aruco
+  SafeQueue<PoseDetectQueueElem>& q_pose
 );
 absl::Status hand_tracking_thread(
   Settings& settings,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking
 );
-void aruco_detection_thread(
-  SafeQueue<ArucoDetectQueueElem>& q_aruco
+void pose_detection_thread(
+  SafeQueue<PoseDetectQueueElem>& q_pose
 );
 
 #define MAX_FRAMES 10
@@ -82,7 +74,7 @@ struct Frame {
   std::vector<std::vector<cv::Point2f>> markerCorners;
   double camera_fps;  
   double hand_tracking_fps;  
-  double aruco_fps;
+  double pose_fps;
 };
 
 class FramesData {

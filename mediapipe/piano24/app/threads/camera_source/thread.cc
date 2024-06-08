@@ -3,7 +3,7 @@
 absl::Status camera_source_thread(
   Settings& settings,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
-  SafeQueue<ArucoDetectQueueElem>& q_aruco
+  SafeQueue<PoseDetectQueueElem>& q_pose
 ) {
   ABSL_LOG(INFO) << "Initialize the camera.";
   cv::VideoCapture capture;
@@ -44,7 +44,7 @@ absl::Status camera_source_thread(
 
     std::cout << "-- NEW FRAME #" << index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";;
     q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
-    q_aruco.enqueue(ArucoDetectQueueElem { frame_index: index });
+    q_pose.enqueue(PoseDetectQueueElem { frame_index: index });
 
     if (is_load_video) {
       sleep(1);
