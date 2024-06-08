@@ -20,10 +20,11 @@ void aruco_detection_thread(
 
   while (true) {
     ArucoDetectQueueElem event = q_aruco.dequeue_all();
-    cv::Mat* camera_frame = frames_data.get_frame(event.frame_index);
-    if (camera_frame == NULL) {
+    Frame* frame = frames_data.get_frame(event.frame_index);
+    if (frame == NULL) {
       continue;
     }
+    cv::Mat* camera_frame = frame->mat;
 
     double start_time = clock();
     

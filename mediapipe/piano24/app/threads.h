@@ -76,16 +76,25 @@ void aruco_detection_thread(
 
 #define MAX_FRAMES 10
 
+struct Frame {
+  cv::Mat *mat;
+  std::vector<int> markerIds;
+  std::vector<std::vector<cv::Point2f>> markerCorners;
+  double camera_fps;  
+  double hand_tracking_fps;  
+  double aruco_fps;
+};
+
 class FramesData {
   std::mutex m;
-  std::map<int, cv::Mat*> frames;
+  std::map<int, Frame> frames;
   int next_frame_index = 0;
 
   public:
     int add_frame(cv::Mat* frame);
     void erase(void);
-    cv::Mat* get_frame(int index);    
-    cv::Mat* get_last_frame();    
+    Frame* get_frame(int index);    
+    Frame* get_last_frame();    
 };
 
 extern FramesData frames_data;

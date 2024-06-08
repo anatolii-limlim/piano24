@@ -39,10 +39,11 @@ absl::Status hand_tracking_thread( Settings& settings, SafeQueue<HandTrackingQue
 
   while (true) {
     HandTrackingQueueElem event = q_hand_tracking.dequeue();
-    cv::Mat* camera_frame = frames_data.get_frame(event.frame_index);
-    if (camera_frame == NULL) {
+    Frame* frame = frames_data.get_frame(event.frame_index);
+    if (frame == NULL) {
       continue;
     }
+    cv::Mat* camera_frame = frame->mat;
 
     double start_time = clock();
       

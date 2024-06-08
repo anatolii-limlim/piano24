@@ -28,10 +28,10 @@ int app_main(int argc, char** argv) {
   while (true) {
     double start_time = clock();
 
-    cv::Mat *frame = frames_data.get_last_frame();
+    Frame *frame = frames_data.get_last_frame();
 
     if (frame != NULL) {
-      cv::imshow("Piano24", *frame);
+      cv::imshow("Piano24", *(frame->mat));
       cv::waitKey(1);
     }
 

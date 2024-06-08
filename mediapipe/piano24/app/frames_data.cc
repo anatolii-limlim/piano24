@@ -6,7 +6,7 @@ int FramesData::add_frame(cv::Mat* frame) {
   std::lock_guard<std::mutex> lock(this->m);
 
   int index = this->next_frame_index;
-  this->frames[index] = frame;
+  this->frames[index] = Frame { mat: frame };
   this->next_frame_index++;
 
   return index;
@@ -18,24 +18,23 @@ void FramesData::erase() {
   int index = this->next_frame_index;
 
   if (this->frames.size() == MAX_FRAMES) {
-    cv::Mat* elem = this->frames[index - MAX_FRAMES];
+    Frame elem = this->frames[index - MAX_FRAMES];
     this->frames.erase(index - MAX_FRAMES);
-    delete elem;    
+    delete elem.mat;    
   }
 }
 
-cv::Mat* FramesData::get_frame(int index) {
+Frame* FramesData::get_frame(int index) {
   std::lock_guard<std::mutex> lock(this->m);
 
-  cv::Mat* frame = NULL;
   if (this->frames.count(index)) {
-    frame = this->frames[index];
+    return &this->frames[index];
   }
 
-  return frame;
+  return NULL;
 }
 
-cv::Mat* FramesData::get_last_frame() {
+Frame* FramesData::get_last_frame() {
   std::lock_guard<std::mutex> lock(this->m);
 
   std::vector<int> keys;
@@ -46,7 +45,7 @@ cv::Mat* FramesData::get_last_frame() {
   sort(keys.begin(), keys.end());
 
   if (keys.size()) {
-    return this->frames[keys.back()];
+    return &this->frames[keys.back()];
   }
 
   return NULL;  
