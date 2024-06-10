@@ -63,6 +63,20 @@ void pose_detection_thread(
       relative_search = true;
     }
 
+    int start_count = std::count_if(
+      markerIds.begin(), markerIds.end(),
+      [&](int marker_id) { return marker_id == ARUCO_START; }
+    );
+    int end_count = std::count_if(
+      markerIds.begin(), markerIds.end(),
+      [&](int marker_id) { return marker_id == ARUCO_END; }
+    );
+    
+    frames_data.update_frame_pose(
+      event.frame_index, true, start_count == 1 && end_count == 2,
+      markerIds, markerCorners
+    );
+
     std::cout << "ARUCO DETECTED #" << event.frame_index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";
   }  
 }

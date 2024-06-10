@@ -34,7 +34,11 @@ class Settings {
 #define MAX_FRAMES 10
 
 struct Frame {
+  std::mutex m;
+  int index;
   cv::Mat *mat;
+  bool is_pose_detection_finished = false;
+  bool is_pose_detected;
   std::vector<int> markerIds;
   std::vector<std::vector<cv::Point2f>> markerCorners;
   double camera_fps;  
@@ -47,11 +51,21 @@ class FramesData {
   std::map<int, Frame> frames;
   int next_frame_index = 0;
 
+  void get_available_keys(std::vector<int>& keys);
+
   public:
     int add_frame(cv::Mat* frame);
     void erase(void);
     Frame* get_frame(int index);    
-    Frame* get_last_frame();    
+    Frame* get_last_frame();
+    void update_frame_pose(
+      int frame_index,
+      bool is_pose_detection_finished,
+      bool is_pose_detected,
+      std::vector<int> markerIds,
+      std::vector<std::vector<cv::Point2f>> markerCorners
+    );
+    Frame* get_last_detected_frame();    
 };
 
 struct HandTrackingQueueElem {
