@@ -33,10 +33,10 @@ void pose_detection_thread(
     if (relative_search) {
       for (int i = 0; i < markerIds.size(); i++) {
         cv::Rect bbox = cv::boundingRect(markerCorners[i]);
-        bbox.x -= settings.aruco_relative_max_d;
-        bbox.y -= settings.aruco_relative_max_d;
-        bbox.width += 2 * settings.aruco_relative_max_d;
-        bbox.height += 2 * settings.aruco_relative_max_d;
+        bbox.x = std::max(bbox.x - settings.aruco_relative_max_d, 0);
+        bbox.y = std::max(bbox.y - settings.aruco_relative_max_d, 0);
+        bbox.width = std::min(bbox.width + 2 * settings.aruco_relative_max_d, camera_frame->cols - bbox.x);
+        bbox.height = std::min(bbox.height + 2 * settings.aruco_relative_max_d, camera_frame->rows - bbox.y);
 
         std::vector<int> rMarkerIds;
         std::vector<std::vector<cv::Point2f>> rMarkerCorners, rRejectedCandidates;
@@ -59,8 +59,6 @@ void pose_detection_thread(
       rejectedCandidates.clear();
 
       cv::aruco::detectMarkers(*camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
-
-      relative_search = true;
     }
 
     int start_count = std::count_if(
@@ -72,10 +70,16 @@ void pose_detection_thread(
       [&](int marker_id) { return marker_id == ARUCO_END; }
     );
     
+    bool is_pose_detected = start_count == 1 && end_count == 2;
+
     frames_data.update_frame_pose(
-      event.frame_index, true, start_count == 1 && end_count == 2,
+      event.frame_index, true, is_pose_detected,
       markerIds, markerCorners
     );
+
+    if (is_pose_detected) {
+      relative_search = true;
+    }
 
     std::cout << "ARUCO DETECTED #" << event.frame_index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";
   }  

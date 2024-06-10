@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <map>
 #include <mutex>
+#include <time.h>
 
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
@@ -109,3 +110,13 @@ void pose_detection_thread(
 
 #define ARUCO_START 8
 #define ARUCO_END 47
+
+class FPS {
+  timespec start;
+
+  public:
+    FPS();
+    double get_time_spent();
+    double get_fps();
+    std::string get_fps_str();
+};

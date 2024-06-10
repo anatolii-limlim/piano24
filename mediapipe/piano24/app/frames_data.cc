@@ -47,7 +47,7 @@ Frame* FramesData::get_last_frame() {
   this->get_available_keys(keys);
 
   if (keys.size()) {
-    return &this->frames[0];
+    return &this->frames[keys[0]];
   }
 
   return NULL;  
@@ -60,8 +60,8 @@ Frame* FramesData::get_last_detected_frame() {
   this->get_available_keys(keys);
 
   for (int i = 0; i < keys.size(); i++) {
-    if (this->frames[i].is_pose_detection_finished) {
-      return &this->frames[i];
+    if (this->frames[keys[i]].is_pose_detection_finished) {
+      return &this->frames[keys[i]];
     }
   }
 

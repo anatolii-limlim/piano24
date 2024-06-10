@@ -17,10 +17,9 @@ absl::Status camera_source_thread(
   RET_CHECK(capture.isOpened());
 
   ABSL_LOG(INFO) << "Start grabbing and processing frames.";
-  bool grab_frames = true;
-  while (grab_frames) 
+  while (true) 
   {
-    double start_time = clock();
+    FPS fps;
 
     // Capture opencv camera or video frame.
     cv::Mat camera_frame_raw;
@@ -34,8 +33,8 @@ absl::Status camera_source_thread(
       }
     }    
     cv::Mat* camera_frame = new cv::Mat();
-    cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGBA);
-    // cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
+    cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGB);
+    cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
 
     if (is_load_video) {
       cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_RGBA2RGB);
@@ -43,7 +42,7 @@ absl::Status camera_source_thread(
 
     int index = frames_data.add_frame(camera_frame);
 
-    std::cout << "-- NEW FRAME #" << index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";;
+    std::cout << "NEW FRAME #" << index << " " << fps.get_fps_str() << "\n";
     q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
     q_pose.enqueue(PoseDetectQueueElem { frame_index: index });
 
