@@ -42,7 +42,7 @@ absl::Status camera_source_thread(
 
     int index = frames_data.add_frame(camera_frame);
 
-    // q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
+    q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
     q_pose.enqueue(PoseDetectQueueElem { frame_index: index });
 
     std::cout << "NEW FRAME #" << index << " " << fps.get_fps_str() << "\n";
