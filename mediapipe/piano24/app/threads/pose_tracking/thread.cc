@@ -28,7 +28,7 @@ void pose_detection_thread(
     }
     cv::Mat* camera_frame = frame->mat;
 
-    double start_time = clock();
+    FPS fps;
     
     if (relative_search) {
       for (int i = 0; i < markerIds.size(); i++) {
@@ -72,15 +72,15 @@ void pose_detection_thread(
     
     bool is_pose_detected = start_count == 1 && end_count == 2;
 
-    frames_data.update_frame_pose(
-      event.frame_index, true, is_pose_detected,
-      markerIds, markerCorners
-    );
-
     if (is_pose_detected) {
       relative_search = true;
     }
 
-    std::cout << "ARUCO DETECTED #" << event.frame_index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";
+    frames_data.update_frame_pose(
+      event.frame_index, true, is_pose_detected,
+      markerIds, markerCorners, fps.get_fps()
+    );
+
+    std::cout << "ARUCO DETECTED #" << event.frame_index << " " << fps.get_fps_str() << "\n";
   }  
 }

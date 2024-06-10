@@ -73,7 +73,8 @@ void FramesData::update_frame_pose(
   bool is_pose_detection_finished,
   bool is_pose_detected,
   std::vector<int> markerIds,
-  std::vector<std::vector<cv::Point2f>> markerCorners
+  std::vector<std::vector<cv::Point2f>> markerCorners,
+  double pose_fps
 ) {
   Frame* frame = this->get_frame(frame_index);
 
@@ -83,4 +84,16 @@ void FramesData::update_frame_pose(
   frame->is_pose_detected = is_pose_detected;
   frame->markerIds = markerIds;
   frame->markerCorners = markerCorners;
+  frame->pose_fps = pose_fps;
+}
+
+void FramesData::update_camera_fps(
+  int frame_index,
+  double camera_fps
+) {
+  Frame* frame = this->get_frame(frame_index);
+
+  std::lock_guard<std::mutex> lock(frame->m);
+
+  frame->camera_fps = camera_fps;
 }

@@ -59,12 +59,17 @@ class FramesData {
     void erase(void);
     Frame* get_frame(int index);    
     Frame* get_last_frame();
+    void update_camera_fps(
+      int frame_index,
+      double camera_fps
+    );
     void update_frame_pose(
       int frame_index,
       bool is_pose_detection_finished,
       bool is_pose_detected,
       std::vector<int> markerIds,
-      std::vector<std::vector<cv::Point2f>> markerCorners
+      std::vector<std::vector<cv::Point2f>> markerCorners,
+      double pose_fps
     );
     Frame* get_last_detected_frame();    
 };

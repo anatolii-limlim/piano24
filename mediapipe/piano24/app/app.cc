@@ -42,6 +42,13 @@ int app_main(int argc, char** argv) {
         }
         cv::polylines(*(frame->mat), points, true, cv::Scalar(0, 0, 255), 2);
       }
+
+      std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";
+      std::string pose_str = "POSE: " + std::to_string(((int)frame->pose_fps)) + "fps";
+
+      cv::putText(*(frame->mat), camera_str, cv::Point(10, 35), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
+      cv::putText(*(frame->mat), pose_str, cv::Point(10, 70), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
+
       cv::imshow("Piano24", *(frame->mat));
       cv::waitKey(1);
       step_i++;
