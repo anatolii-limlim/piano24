@@ -45,6 +45,9 @@ int app_main(int argc, char** argv) {
 
       std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";
       std::string pose_str = "POSE: " + std::to_string(((int)frame->pose_fps)) + "fps";
+      if (!frame->is_pose_detected) {
+        pose_str += " NOT_DETECTED";
+      }
 
       cv::putText(*(frame->mat), camera_str, cv::Point(10, 35), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
       cv::putText(*(frame->mat), pose_str, cv::Point(10, 70), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);

@@ -22,9 +22,9 @@ absl::Status camera_source_thread(
     FPS fps;
 
     // Capture opencv camera or video frame.
-    cv::Mat camera_frame_raw;
-    capture >> camera_frame_raw;
-    if (camera_frame_raw.empty()) {
+    cv::Mat *camera_frame = new cv::Mat();
+    capture >> *camera_frame;
+    if (camera_frame->empty()) {
       if (is_load_video) {
         return absl::Status();
       } else {
@@ -32,17 +32,17 @@ absl::Status camera_source_thread(
         continue;
       }
     }    
-    cv::Mat* camera_frame = new cv::Mat();
-    cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGB);
+    // cv::Mat* camera_frame = new cv::Mat();
+    // cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGB);
     cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
 
-    if (is_load_video) {
-      cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_RGBA2RGB);
-    }
+    // if (is_load_video) {
+    //   cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_RGBA2RGB);
+    // }
 
     int index = frames_data.add_frame(camera_frame);
 
-    q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
+    // q_hand_tracking.enqueue(HandTrackingQueueElem { frame_index: index });
     q_pose.enqueue(PoseDetectQueueElem { frame_index: index });
 
     std::cout << "NEW FRAME #" << index << " " << fps.get_fps_str() << "\n";
