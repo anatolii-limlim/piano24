@@ -59,7 +59,7 @@ int app_main(int argc, char** argv) {
 
     double sleep_t = (1.0 / settings.admin_app_fps - (clock() - start_time) / CLOCKS_PER_SEC) * 1000000;
     if (step_i == 1) {
-      sleep_t = 100;
+      sleep_t = 1000;
     }
     usleep(sleep_t);
   }

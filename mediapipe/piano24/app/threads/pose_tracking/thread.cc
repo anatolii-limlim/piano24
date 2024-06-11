@@ -26,7 +26,8 @@ void pose_detection_thread(
     if (frame == NULL) {
       continue;
     }
-    cv::Mat* camera_frame = frame->mat;
+    cv::Mat camera_frame;    
+    cv::cvtColor(*frame->mat, camera_frame, cv::COLOR_BGR2RGB);
 
     FPS fps;
     
@@ -35,12 +36,12 @@ void pose_detection_thread(
         cv::Rect bbox = cv::boundingRect(markerCorners[i]);
         bbox.x = std::max(bbox.x - settings.aruco_relative_max_d, 0);
         bbox.y = std::max(bbox.y - settings.aruco_relative_max_d, 0);
-        bbox.width = std::min(bbox.width + 2 * settings.aruco_relative_max_d, camera_frame->cols - bbox.x);
-        bbox.height = std::min(bbox.height + 2 * settings.aruco_relative_max_d, camera_frame->rows - bbox.y);
+        bbox.width = std::min(bbox.width + 2 * settings.aruco_relative_max_d, camera_frame.cols - bbox.x);
+        bbox.height = std::min(bbox.height + 2 * settings.aruco_relative_max_d, camera_frame.rows - bbox.y);
 
         std::vector<int> rMarkerIds;
         std::vector<std::vector<cv::Point2f>> rMarkerCorners, rRejectedCandidates;
-        cv::aruco::detectMarkers((*camera_frame)(bbox), dictionary, rMarkerCorners, rMarkerIds, parameters, rRejectedCandidates);
+        cv::aruco::detectMarkers(camera_frame(bbox), dictionary, rMarkerCorners, rMarkerIds, parameters, rRejectedCandidates);
 
         if (rMarkerCorners.size() != 1 || rMarkerIds[0] != markerIds[i]) {
           relative_search = false;
@@ -58,7 +59,7 @@ void pose_detection_thread(
       markerCorners.clear();
       rejectedCandidates.clear();
 
-      cv::aruco::detectMarkers(*camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
+      cv::aruco::detectMarkers(camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
     }
 
     int start_count = std::count_if(

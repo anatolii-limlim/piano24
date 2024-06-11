@@ -39,7 +39,15 @@ absl::Status hand_tracking_thread(
   ABSL_LOG(INFO) << "Start running the calculator graph.";
   MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller,
                       graph.AddOutputStreamPoller(kOutputStream));
+  MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller_landmark,
+                      graph.AddOutputStreamPoller("hand_landmarks"));
+  MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller presence_poller,
+                      graph.AddOutputStreamPoller("landmark_presence"));
+  MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller handedness_poller,
+                      graph.AddOutputStreamPoller("handedness"));
   MP_RETURN_IF_ERROR(graph.StartRun({}));
+
+  std::cout << "GRAPH INITIALIZED\n";
 
   while (true) {
     HandTrackingQueueElem event = q_hand_tracking.dequeue();
@@ -47,16 +55,17 @@ absl::Status hand_tracking_thread(
     if (frame == NULL) {
       continue;
     }
-    cv::Mat* camera_frame = frame->mat;
+    cv::Mat camera_frame;
+    cv::cvtColor(*frame->mat, camera_frame, cv::COLOR_BGR2RGBA);
 
     double start_time = clock();
       
     // Wrap Mat into an ImageFrame.
     auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
-        mediapipe::ImageFormat::SRGBA, camera_frame->cols, camera_frame->rows,
+        mediapipe::ImageFormat::SRGBA, camera_frame.cols, camera_frame.rows,
         mediapipe::ImageFrame::kGlDefaultAlignmentBoundary);
     cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-    camera_frame->copyTo(input_frame_mat);
+    camera_frame.copyTo(input_frame_mat);
 
     // Prepare and add graph input packet.
     size_t frame_timestamp_us =
@@ -77,9 +86,50 @@ absl::Status hand_tracking_thread(
         }));
 
     // Get the graph result packet, or stop if that fails.
-    mediapipe::Packet packet;
-    if (!poller.Next(&packet)) break;
+    // mediapipe::Packet packet;
+    // if (!poller.Next(&packet)) break;
     std::unique_ptr<mediapipe::ImageFrame> output_frame;
+
+    mediapipe::Packet packet;
+    mediapipe::Packet landmark_packet;
+    mediapipe::Packet presence_packet;
+    mediapipe::Packet handedness_packet;
+
+    if (!poller.Next(&packet)) break;
+    
+    // check whether the packet exists
+    if (!presence_poller.Next(&presence_packet)) break;
+    
+    auto is_landmark_present = presence_packet.Get<bool>();
+    
+    if (is_landmark_present) {
+      if (!poller_landmark.Next(&landmark_packet)) break;
+      auto& multiHandLandmarks = landmark_packet.Get<std::vector<::mediapipe::NormalizedLandmarkList>>();
+
+      if (!handedness_poller.Next(&handedness_packet)) break;
+      const auto& handedness = handedness_packet.Get<std::vector<mediapipe::ClassificationList, std::allocator<mediapipe::ClassificationList> >>();
+
+      for (int i = 0; i < handedness.size(); i ++) {
+        auto& h = handedness[i];
+        std::cerr << "h.classification_size:" << h.classification_size() << "\n";
+        if (h.classification_size() > 0) {
+          const mediapipe::Classification & c = h.classification(0);
+          std::cerr << "label:" << c.label() << "\tindex:" << c.index() << "\n";
+        }
+      }
+      // for (const ::mediapipe::NormalizedLandmarkList& normalizedlandmarkList: multiHandLandmarks)
+      // {
+      //   std::cout << "Landmarks:";
+      //   // std::cout << normalizedlandmarkList.DebugString();
+      //   std::cout << "DD " << normalizedlandmarkList.landmark(0).x() << "\n";
+      // }
+    }
+
+    //   for (const ::mediapipe::NormalizedLandmarkList &normalizedlandmarkList : multiHandLandmarks)
+    //   {
+    //     std::cout << "Landmarks:";
+    //     std::cout << normalizedlandmarkList.DebugString();
+    //   }
 
     // Convert GpuBuffer to ImageFrame.
     MP_RETURN_IF_ERROR(gpu_helper.RunInGlContext(

@@ -31,6 +31,7 @@ cc_binary(
         "//mediapipe/gpu:gpu_shared_data_internal",
         "//mediapipe/util:resource_util",
         "//mediapipe/graphs/hand_tracking:mobile_calculators",
+        "//mediapipe/framework/formats:classification_cc_proto",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/log:absl_log",

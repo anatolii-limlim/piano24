@@ -28,6 +28,7 @@
 #include "mediapipe/framework/port/opencv_video_inc.h"
 #include "mediapipe/framework/port/parse_text_proto.h"
 #include "mediapipe/framework/port/status.h"
+//#include "mediapipe/framework/formats/landmark.pb.h"
 #include "mediapipe/gpu/gl_calculator_helper.h"
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
@@ -91,9 +92,13 @@ absl::Status RunMPPGraph() {
   ABSL_LOG(INFO) << "Start running the calculator graph.";
   MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller,
                       graph.AddOutputStreamPoller(kOutputStream));
+  MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller poller_landmark,
+                      graph.AddOutputStreamPoller("hand_landmarks"));
+  MP_ASSIGN_OR_RETURN(mediapipe::OutputStreamPoller presence_poller,
+                      graph.AddOutputStreamPoller("landmark_presence"));
   MP_RETURN_IF_ERROR(graph.StartRun({}));
 
-  ABSL_LOG(INFO) << "Start grabbing and processing frames.";
+  ABSL_LOG(INFO) << "Start grabbing and processing frames!!!!!!!!!!";
   bool grab_frames = true;
   while (grab_frames) {
     // Capture opencv camera or video frame.
@@ -139,9 +144,29 @@ absl::Status RunMPPGraph() {
         }));
 
     // Get the graph result packet, or stop if that fails.
-    mediapipe::Packet packet;
-    if (!poller.Next(&packet)) break;
     std::unique_ptr<mediapipe::ImageFrame> output_frame;
+
+    mediapipe::Packet packet;
+    mediapipe::Packet landmark_packet;
+    mediapipe::Packet presence_packet;
+
+    if (!poller.Next(&packet)) break;
+    
+    // check whether the packet exists
+    if (!presence_poller.Next(&presence_packet)) break;
+    
+    auto is_landmark_present = presence_packet.Get<bool>();
+    std::cout << "FFFFFF " << is_landmark_present << "\n";
+    
+    if (is_landmark_present) {
+      if (!poller_landmark.Next(&landmark_packet)) break;
+      // auto& multiHandLandmarks = landmark_packet.Get<std::vector<::mediapipe::NormalizedLandmarkList>>();
+      // for (const ::mediapipe::NormalizedLandmarkList &normalizedlandmarkList : multiHandLandmarks)
+      // {
+      //   std::cout << "Landmarks:";
+      //   std::cout << normalizedlandmarkList.DebugString();
+      // }
+    }
 
     // Convert GpuBuffer to ImageFrame.
     MP_RETURN_IF_ERROR(gpu_helper.RunInGlContext(

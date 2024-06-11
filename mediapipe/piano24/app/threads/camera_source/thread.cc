@@ -33,7 +33,7 @@ absl::Status camera_source_thread(
       }
     }    
     // cv::Mat* camera_frame = new cv::Mat();
-    // cv::cvtColor(camera_frame_raw, *camera_frame, cv::COLOR_BGR2RGB);
+    // cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_BGR2RGB);
     cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
 
     // if (is_load_video) {

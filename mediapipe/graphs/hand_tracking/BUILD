@@ -44,6 +44,8 @@ cc_library(
         ":desktop_offline_calculators",
         "//mediapipe/calculators/core:constant_side_packet_calculator",
         "//mediapipe/calculators/core:merge_calculator",
+        "//mediapipe/calculators/core:packet_presence_calculator",
+        "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/graphs/hand_tracking/subgraphs:hand_renderer_cpu",
         "//mediapipe/modules/hand_landmark:hand_landmark_tracking_cpu",
     ],
@@ -61,6 +63,8 @@ cc_library(
     deps = [
         "//mediapipe/calculators/core:constant_side_packet_calculator",
         "//mediapipe/calculators/core:flow_limiter_calculator",
+        "//mediapipe/calculators/core:packet_presence_calculator",
+        "//mediapipe/framework/formats:classification_cc_proto",
         "//mediapipe/graphs/hand_tracking/subgraphs:hand_renderer_gpu",
         "//mediapipe/modules/hand_landmark:hand_landmark_tracking_gpu",
     ],
