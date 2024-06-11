@@ -50,7 +50,7 @@ absl::Status hand_tracking_thread(
   std::cout << "GRAPH INITIALIZED\n";
 
   while (true) {
-    HandTrackingQueueElem event = q_hand_tracking.dequeue();
+    HandTrackingQueueElem event = q_hand_tracking.dequeue_all();
     Frame* frame = frames_data.get_frame(event.frame_index);
     if (frame == NULL) {
       continue;
@@ -179,7 +179,7 @@ absl::Status hand_tracking_thread(
       left_hand, right_hand, fps.get_fps()
     );
 
-    std::cout << "HANDS TRACKED #" << event.frame_index << fps.get_fps_str() << "\n";
+    std::cout << "HANDS TRACKED #" << event.frame_index << " " << fps.get_fps_str() << "\n";
   }
 
   return absl::Status();

@@ -127,6 +127,10 @@ void pose_detection_thread(
   FramesData& frames_data,
   SafeQueue<PoseDetectQueueElem>& q_pose
 );
+void admin_app_thread(
+  Settings& settings,
+  FramesData& frames_data
+);
 
 #define ARUCO_START 8
 #define ARUCO_END 47
