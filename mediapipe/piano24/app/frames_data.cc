@@ -20,6 +20,8 @@ void FramesData::erase() {
     Frame& elem = this->frames[index - MAX_FRAMES];
     this->frames.erase(index - MAX_FRAMES);
     delete elem.mat;    
+    delete elem.left_hand;   
+    delete elem.right_hand;  
   }
 }
 
@@ -60,13 +62,25 @@ Frame* FramesData::get_last_detected_frame() {
   this->get_available_keys(keys);
 
   for (int i = 0; i < keys.size(); i++) {
-    if (this->frames[keys[i]].is_pose_detection_finished) {
+    if (this->frames[keys[i]].is_pose_detection_finished &&
+        this->frames[keys[i]].is_hand_tracking_finished) {
       return &this->frames[keys[i]];
     }
   }
 
   return NULL;  
 }    
+
+void FramesData::update_camera_fps(
+  int frame_index,
+  double camera_fps
+) {
+  Frame* frame = this->get_frame(frame_index);
+
+  std::lock_guard<std::mutex> lock(frame->m);
+
+  frame->camera_fps = camera_fps;
+}
 
 void FramesData::update_frame_pose(
   int frame_index,
@@ -87,13 +101,23 @@ void FramesData::update_frame_pose(
   frame->pose_fps = pose_fps;
 }
 
-void FramesData::update_camera_fps(
+void FramesData::update_hands(
   int frame_index,
-  double camera_fps
+  bool is_hand_tracking_finished,
+  bool is_left_hand_found,
+  bool is_right_hand_found,
+  cv::Point2f *left_hand,
+  cv::Point2f *right_hand,
+  double hand_tracking_fps
 ) {
   Frame* frame = this->get_frame(frame_index);
 
   std::lock_guard<std::mutex> lock(frame->m);
 
-  frame->camera_fps = camera_fps;
+  frame->is_hand_tracking_finished = is_hand_tracking_finished;
+  frame->is_left_hand_found = is_left_hand_found;
+  frame->is_right_hand_found = is_right_hand_found;
+  frame->left_hand = left_hand;
+  frame->right_hand = right_hand;
+  frame->hand_tracking_fps = hand_tracking_fps;
 }

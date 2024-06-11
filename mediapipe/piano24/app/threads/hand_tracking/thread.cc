@@ -56,10 +56,11 @@ absl::Status hand_tracking_thread(
       continue;
     }
     cv::Mat camera_frame;
+
+    FPS fps;
+    
     cv::cvtColor(*frame->mat, camera_frame, cv::COLOR_BGR2RGBA);
 
-    double start_time = clock();
-      
     // Wrap Mat into an ImageFrame.
     auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
         mediapipe::ImageFormat::SRGBA, camera_frame.cols, camera_frame.rows,
@@ -85,9 +86,10 @@ absl::Status hand_tracking_thread(
           return absl::OkStatus();
         }));
 
-    // Get the graph result packet, or stop if that fails.
-    // mediapipe::Packet packet;
-    // if (!poller.Next(&packet)) break;
+    bool is_left_hand_found = false;
+    bool is_right_hand_found = false;
+    cv::Point2f *left_hand = new cv::Point2f[21], *right_hand = new cv::Point2f[21];
+
     std::unique_ptr<mediapipe::ImageFrame> output_frame;
 
     mediapipe::Packet packet;
@@ -95,41 +97,54 @@ absl::Status hand_tracking_thread(
     mediapipe::Packet presence_packet;
     mediapipe::Packet handedness_packet;
 
-    if (!poller.Next(&packet)) break;
+    if (!poller.Next(&packet)) {
+      break;
+    }
     
-    // check whether the packet exists
-    if (!presence_poller.Next(&presence_packet)) break;
-    
+    if (!presence_poller.Next(&presence_packet)) {
+       break;
+    }    
     auto is_landmark_present = presence_packet.Get<bool>();
     
     if (is_landmark_present) {
-      if (!poller_landmark.Next(&landmark_packet)) break;
+      if (!poller_landmark.Next(&landmark_packet)) {
+        break;
+      }
       auto& multiHandLandmarks = landmark_packet.Get<std::vector<::mediapipe::NormalizedLandmarkList>>();
 
-      if (!handedness_poller.Next(&handedness_packet)) break;
+      if (!handedness_poller.Next(&handedness_packet)) {
+        break;
+      }
       const auto& handedness = handedness_packet.Get<std::vector<mediapipe::ClassificationList, std::allocator<mediapipe::ClassificationList> >>();
+      std::vector<int> handedness_ids;
 
       for (int i = 0; i < handedness.size(); i ++) {
         auto& h = handedness[i];
-        std::cerr << "h.classification_size:" << h.classification_size() << "\n";
         if (h.classification_size() > 0) {
           const mediapipe::Classification & c = h.classification(0);
-          std::cerr << "label:" << c.label() << "\tindex:" << c.index() << "\n";
+          handedness_ids.push_back(c.index());
         }
       }
-      // for (const ::mediapipe::NormalizedLandmarkList& normalizedlandmarkList: multiHandLandmarks)
-      // {
-      //   std::cout << "Landmarks:";
-      //   // std::cout << normalizedlandmarkList.DebugString();
-      //   std::cout << "DD " << normalizedlandmarkList.landmark(0).x() << "\n";
-      // }
-    }
 
-    //   for (const ::mediapipe::NormalizedLandmarkList &normalizedlandmarkList : multiHandLandmarks)
-    //   {
-    //     std::cout << "Landmarks:";
-    //     std::cout << normalizedlandmarkList.DebugString();
-    //   }
+      int i = 0;
+      for (const ::mediapipe::NormalizedLandmarkList& normalizedlandmarkList: multiHandLandmarks)
+      {
+        cv::Point2f *hand;
+        if (handedness_ids[i] == HAND_LEFT) {
+          is_left_hand_found = true;
+          hand = left_hand;
+        } else {
+          is_right_hand_found = true;
+          hand = right_hand;
+        }
+
+        for (int j = 0; j < 21; j++) {
+          hand[j] = cv::Point2f(normalizedlandmarkList.landmark(j).x(), normalizedlandmarkList.landmark(j).y());
+        }
+
+        i++;
+      }
+    }
 
     // Convert GpuBuffer to ImageFrame.
     MP_RETURN_IF_ERROR(gpu_helper.RunInGlContext(
@@ -159,7 +174,12 @@ absl::Status hand_tracking_thread(
 
     frames_data.erase();
 
-    std::cout << "HANDS TRACKED #" << event.frame_index << " FPS: " << CLOCKS_PER_SEC / (clock() - start_time) << "\n";
+    frames_data.update_hands(
+      event.frame_index, true, is_left_hand_found, is_right_hand_found,
+      left_hand, right_hand, fps.get_fps()
+    );
+
+    std::cout << "HANDS TRACKED #" << event.frame_index << fps.get_fps_str() << "\n";
   }
 
   return absl::Status();

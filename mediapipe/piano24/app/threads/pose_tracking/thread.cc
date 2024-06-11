@@ -27,10 +27,11 @@ void pose_detection_thread(
       continue;
     }
     cv::Mat camera_frame;    
-    cv::cvtColor(*frame->mat, camera_frame, cv::COLOR_BGR2RGB);
 
     FPS fps;
     
+    cv::cvtColor(*frame->mat, camera_frame, cv::COLOR_BGR2RGB);
+
     if (relative_search) {
       for (int i = 0; i < markerIds.size(); i++) {
         cv::Rect bbox = cv::boundingRect(markerCorners[i]);

@@ -44,6 +44,10 @@ struct Frame {
   bool is_pose_detected;
   std::vector<int> markerIds;
   std::vector<std::vector<cv::Point2f>> markerCorners;
+  bool is_hand_tracking_finished = false;
+  bool is_left_hand_found; 
+  bool is_right_hand_found; 
+  cv::Point2f *left_hand, *right_hand;  // 21 elements arrays
   double camera_fps;  
   double hand_tracking_fps;  
   double pose_fps;
@@ -72,6 +76,15 @@ class FramesData {
       std::vector<int> markerIds,
       std::vector<std::vector<cv::Point2f>> markerCorners,
       double pose_fps
+    );
+    void update_hands(
+      int frame_index,
+      bool is_hand_tracking_finished,
+      bool is_left_hand_found,
+      bool is_right_hand_found,
+      cv::Point2f *left_hand,
+      cv::Point2f *right_hand,
+      double hand_tracking_fps
     );
     Frame* get_last_detected_frame();    
 };
@@ -127,3 +140,29 @@ class FPS {
     double get_fps();
     std::string get_fps_str();
 };
+
+#define HAND_LEFT    0
+#define HAND_RIGHT   1
+
+#define HT_WRIST     0
+#define HT_THUMB_1   1
+#define HT_THUMB_2   2
+#define HT_THUMB_3   3
+#define HT_THUMB_4   4
+#define HT_INDEX_1   5
+#define HT_INDEX_2   6
+#define HT_INDEX_3   7
+#define HT_INDEX_4   8
+#define HT_MIDDLE_1  9
+#define HT_MIDDLE_2  10
+#define HT_MIDDLE_3  11
+#define HT_MIDDLE_4  12
+#define HT_RING_1    13
+#define HT_RING_2    14
+#define HT_RING_3    15
+#define HT_RING_4    16
+#define HT_PINKY_1   17
+#define HT_PINKY_2   18
+#define HT_PINKY_3   19
+#define HT_PINKY_4   20
+
