@@ -82,7 +82,5 @@ void pose_detection_thread(
       event.frame_index, true, is_pose_detected,
       markerIds, markerCorners, fps.get_fps()
     );
-
-    std::cout << "ARUCO DETECTED #" << event.frame_index << " " << fps.get_fps_str() << "\n";
   }  
 }

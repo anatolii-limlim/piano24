@@ -172,14 +172,10 @@ absl::Status hand_tracking_thread(
     else
       cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
 
-    frames_data.erase();
-
-    frames_data.update_hands(
+   frames_data.update_hands(
       event.frame_index, true, is_left_hand_found, is_right_hand_found,
       left_hand, right_hand, fps.get_fps()
     );
-
-    std::cout << "HANDS TRACKED #" << event.frame_index << " " << fps.get_fps_str() << "\n";
   }
 
   return absl::Status();

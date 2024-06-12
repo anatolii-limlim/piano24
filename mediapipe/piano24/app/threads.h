@@ -34,7 +34,7 @@ class Settings {
     void load_file( std::string file_name );    
 };
 
-#define MAX_FRAMES 10
+#define MAX_FRAMES 100
 
 struct Frame {
   std::mutex m;
