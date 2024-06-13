@@ -20,23 +20,6 @@ void admin_app_thread(
         cv::polylines(*(frame->mat), points, true, cv::Scalar(0, 0, 255), 2);
       }
 
-      std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";
-      std::string pose_str = "POSE: " + std::to_string(((int)frame->pose_fps)) + "fps";
-      if (!frame->is_pose_detected) {
-        pose_str += " NOT_DETECTED";
-      }
-      std::string hands_str = "HANDS: " + std::to_string(((int)frame->hand_tracking_fps)) + "fps";
-      if (frame->is_left_hand_found) {
-        hands_str += " LEFT";
-      }
-      if (frame->is_right_hand_found) {
-        hands_str += " RIGHT";
-      }
-
-      cv::putText(*(frame->mat), camera_str, cv::Point(10, 35), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
-      cv::putText(*(frame->mat), pose_str, cv::Point(10, 70), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
-      cv::putText(*(frame->mat), hands_str, cv::Point(10, 105), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
-
       auto draw_hand = [](cv::Mat* frame, cv::Point2f* hand) {
         auto draw_line = [](cv::Mat* frame, cv::Point2f* hand, int i1, int i2) {
           cv::line(
@@ -71,6 +54,23 @@ void admin_app_thread(
       if (frame->is_right_hand_found) {
         draw_hand(frame->mat, frame->right_hand);
       }
+
+      std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";
+      std::string pose_str = "POSE: " + std::to_string(((int)frame->pose_fps)) + "fps";
+      if (!frame->is_pose_detected) {
+        pose_str += " NOT_DETECTED";
+      }
+      std::string hands_str = "HANDS: " + std::to_string(((int)frame->hand_tracking_fps)) + "fps";
+      if (frame->is_left_hand_found) {
+        hands_str += " LEFT";
+      }
+      if (frame->is_right_hand_found) {
+        hands_str += " RIGHT";
+      }
+
+      cv::putText(*(frame->mat), camera_str, cv::Point(10, 35), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
+      cv::putText(*(frame->mat), pose_str, cv::Point(10, 70), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
+      cv::putText(*(frame->mat), hands_str, cv::Point(10, 105), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
 
       cv::imshow("Piano24", *(frame->mat));
       cv::waitKey(1);

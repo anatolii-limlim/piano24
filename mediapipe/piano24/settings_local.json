@@ -3,5 +3,10 @@
   "video_file_path": "",
   "aruco_relative_max_d": 30,
   "target_fps": 240,
-  "admin_app_fps": 24
+  "admin_app_fps": 24,
+  "base_img": "mediapipe/piano24/docs/fp-10.jpg",
+  "base_corner": [1470, 267],
+  "base_left": [130, 267],
+  "base_bottom": [1470, 434],
+  "base_black_corner": [1431, 378]
 }
