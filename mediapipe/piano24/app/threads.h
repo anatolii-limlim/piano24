@@ -2,6 +2,7 @@
 #include <map>
 #include <mutex>
 #include <time.h>
+#include <Eigen/Dense>
 
 #include "absl/flags/flag.h"
 #include "absl/flags/parse.h"
@@ -30,8 +31,44 @@ class Settings {
     int aruco_relative_max_d;
     int target_fps;
     int admin_app_fps;
+    std::string base_img_path;
+    cv::Point base_corner;
+    cv::Point base_left;
+    cv::Point base_bottom;
+    cv::Point base_black_corner;
 
     void load_file( std::string file_name );    
+};
+
+class PianoGeometry {
+  public:
+    class NotePosition {
+      public:
+        int octave_id, note_id;
+    };
+
+    class Basis {
+      public:
+        Eigen::Vector2f x, y;
+    };
+
+    class PianoBasis {
+      public:
+        Eigen::Vector2f c0, whiteX, whiteY, blackX, blackY;
+    };
+
+    NotePosition get_midi_note_position( int midi_note_id );
+
+    Basis get_basis_by_aruco(
+      std::vector<int> markerIds,
+      std::vector<std::vector<cv::Point2f>> markerCorners
+    );
+
+    PianoBasis base_piano_basis;
+
+    void load_settings( Settings& settings );
+    void draw_piano( cv::Mat& image, PianoBasis& piano_basis );
+    void check_finger_on_key( cv::Point2f* finger, PianoBasis& piano_basis );
 };
 
 #define MAX_FRAMES 100
@@ -44,6 +81,7 @@ struct Frame {
   bool is_pose_detected;
   std::vector<int> markerIds;
   std::vector<std::vector<cv::Point2f>> markerCorners;
+  PianoGeometry::PianoBasis piano_basis;
   bool is_hand_tracking_finished = false;
   bool is_left_hand_found; 
   bool is_right_hand_found; 
