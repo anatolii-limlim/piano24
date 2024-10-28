@@ -1,17 +1,17 @@
-## Piano24
+## Piano24!
 
 Piano24 is another one try to solve piano fundamental problem of the impossibility of playing _between the notes_ and get effects like pitch bend or vibrato.  
 
-The most popular idea about this is to make surface of keys sensorable that makes musitian able to modify note pitch after key pressed. This is used in synthesizers, piano-like keyaboards and even in real pianos.
+The most popular idea about this is to make the surface of keys sensible that makes musicians able to modify note pitch after key pressed. This is used in synthesizers, piano-like keyboards and even in real pianos.
 
 Project mission is to make these features convenient for use by classic pianists, for this:
 * add new pedals to control sensors
-* keep keyboard mechanics with no chnages, keys shape and weight are important
-* easily attached to any digital piano with smartphone and pc
+* keep keyboard mechanics with no changes, keys shape and weight are important
+* ideally if easily attached to any digital piano with smartphone and pc
 
 ### Technologies
 
-Any modern digital piano with full-weighted keyboard.
+Any modern digital piano with a full-weighted keyboard.
 
 [MediaPipe](https://mediapipe.readthedocs.io/en/latest/solutions/hands.html) to track finger movement across the key by video stream.
 
@@ -23,7 +23,7 @@ First version works with standard computer vision cameras (at least 1280px at 18
 
 ### Similar projects
 
-Perfect realization of such keyboard with hardware sensors is [TouchKeys](https://andrewmcpherson.org/project/touchkeys) by Andrew McPherson. 
+Perfect realization of such a keyboard with hardware sensors is [TouchKeys](https://andrewmcpherson.org/project/touchkeys) by Andrew McPherson. 
 
 ### Source code
 
