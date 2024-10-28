@@ -63,16 +63,10 @@ void pose_detection_thread(
       cv::aruco::detectMarkers(camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
     }
 
-    int start_count = std::count_if(
-      markerIds.begin(), markerIds.end(),
-      [&](int marker_id) { return marker_id == ARUCO_START; }
-    );
-    int end_count = std::count_if(
-      markerIds.begin(), markerIds.end(),
-      [&](int marker_id) { return marker_id == ARUCO_END; }
-    );
+    int start_count = std::count(markerIds.begin(), markerIds.end(), ARUCO_START);
+    int end_count = std::count(markerIds.begin(), markerIds.end(), ARUCO_END);
     
-    bool is_pose_detected = start_count == 1 && end_count == 2;
+    bool is_pose_detected = start_count == 1 && end_count == 1;
 
     if (is_pose_detected) {
       relative_search = true;

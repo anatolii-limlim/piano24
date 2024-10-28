@@ -42,33 +42,29 @@ class Settings {
 
 class PianoGeometry {
   public:
-    class NotePosition {
-      public:
-        int octave_id, note_id;
+    struct NotePosition {
+      int octave_id, note_id;
     };
-
-    class Basis {
-      public:
-        Eigen::Vector2f x, y;
+    struct Basis {
+      Eigen::Vector2f x, y;
     };
-
-    class PianoBasis {
-      public:
-        Eigen::Vector2f c0, whiteX, whiteY, blackX, blackY;
+    struct PianoBasis {
+      Eigen::Vector2f c0, whiteX, whiteY, blackX, blackY;
     };
 
     NotePosition get_midi_note_position( int midi_note_id );
+    int get_midi_note_id( NotePosition& note_position );
 
     Basis get_basis_by_aruco(
-      std::vector<int> markerIds,
-      std::vector<std::vector<cv::Point2f>> markerCorners
+      std::vector<int>& markerIds,
+      std::vector<std::vector<cv::Point2f>>& markerCorners
     );
 
-    PianoBasis base_piano_basis;
+    PianoBasis piano_basis;
 
     void load_settings( Settings& settings );
-    void draw_piano( cv::Mat& image, PianoBasis& piano_basis );
-    void check_finger_on_key( cv::Point2f* finger, PianoBasis& piano_basis );
+    void draw_piano( Basis& basis, cv::Mat& image );
+    void check_finger_on_key( Basis& basis, cv::Point2f* finger );
 };
 
 #define MAX_FRAMES 100
