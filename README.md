@@ -1,4 +1,4 @@
-## Piano24!
+## Piano24
 
 Piano24 is another one try to solve piano fundamental problem of the impossibility of playing _between the notes_ and get effects like pitch bend or vibrato.  
 
