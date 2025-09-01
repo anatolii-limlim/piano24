@@ -1,6 +1,7 @@
 #include <cstddef>
 #include <map>
 #include <mutex>
+#include <vector>
 #include <time.h>
 #include <Eigen/Dense>
 
@@ -22,20 +23,22 @@
 
 #include "safe_queue.h"
 
+#include "geom/PianoCoordinateTransformer.h"
+
 int app_main(int argc, char** argv);
 
 class Settings {
   public:
     std::string graph_config_path;
     std::string video_file_path;
-    int aruco_relative_max_d;
-    int target_fps;
-    int admin_app_fps;
+    std::string static_frame_path;
     std::string base_img_path;
     cv::Point base_corner;
     cv::Point base_left;
     cv::Point base_bottom;
-    cv::Point base_black_corner;
+    int aruco_relative_max_d;
+    int target_fps;
+    int admin_app_fps;
 
     void load_file( std::string file_name );    
 };

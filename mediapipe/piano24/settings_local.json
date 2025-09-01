@@ -1,12 +1,12 @@
 {
   "graph_config_path": "mediapipe/piano24/hand_tracking_desktop_live_gpu.pbtxt",
   "video_file_path": "",
+  "static_frame_path": "",
+  "base_img_path": "mediapipe/piano24/docs/fp-10.jpg",
+  "keyboard_left_top": [1470, 267],
+  "keyboard_right_top": [1470, 434],
+  "keyboard_left_bottom": [130, 267],
   "aruco_relative_max_d": 30,
   "target_fps": 240,
-  "admin_app_fps": 24,
-  "base_img_path": "mediapipe/piano24/docs/fp-10.jpg",
-  "base_corner": [1470, 267],
-  "base_left": [130, 267],
-  "base_bottom": [1470, 434],
-  "base_black_corner": [1431, 378]
+  "admin_app_fps": 24
 }
