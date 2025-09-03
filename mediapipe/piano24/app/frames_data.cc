@@ -88,6 +88,7 @@ void FramesData::update_frame_pose(
   bool is_pose_detected,
   std::vector<int> markerIds,
   std::vector<std::vector<cv::Point2f>> markerCorners,
+  PianoCoordinateTransformer piano_coord,
   double pose_fps
 ) {
   Frame* frame = this->get_frame(frame_index);
@@ -98,6 +99,7 @@ void FramesData::update_frame_pose(
   frame->is_pose_detected = is_pose_detected;
   frame->markerIds = markerIds;
   frame->markerCorners = markerCorners;
+  frame->piano_coord = piano_coord;
   frame->pose_fps = pose_fps;
 }
 

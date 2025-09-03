@@ -28,4 +28,13 @@ void Settings::load_file( std::string file_name ) {
       settings["ethalon_kbd_right_bottom"][0].asInt(),
       settings["ethalon_kbd_right_bottom"][1].asInt()
     );
+
+    this->piano_coord.init(
+      cv::imread(this->ethalon_img_path),
+      PianoCoordinateTransformer::CornerCoords{
+        cv::Point2f(this->ethalon_kbd_left_top),
+        cv::Point2f(this->ethalon_kbd_right_top),
+        cv::Point2f(this->ethalon_kbd_right_bottom)
+      }
+    );
 }

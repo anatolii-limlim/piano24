@@ -39,35 +39,9 @@ class Settings {
     int aruco_relative_max_d;
     int target_fps;
     int admin_app_fps;
+    PianoCoordinateTransformer piano_coord;
 
     void load_file( std::string file_name );    
-};
-
-class PianoGeometry {
-  public:
-    struct NotePosition {
-      int octave_id, note_id;
-    };
-    struct Basis {
-      Eigen::Vector2f x, y;
-    };
-    struct PianoBasis {
-      Eigen::Vector2f c0, whiteX, whiteY, blackX, blackY;
-    };
-
-    NotePosition get_midi_note_position( int midi_note_id );
-    int get_midi_note_id( NotePosition& note_position );
-
-    Basis get_basis_by_aruco(
-      std::vector<int>& markerIds,
-      std::vector<std::vector<cv::Point2f>>& markerCorners
-    );
-
-    PianoBasis piano_basis;
-
-    void load_settings( Settings& settings );
-    void draw_piano( Basis& basis, cv::Mat& image );
-    void check_finger_on_key( Basis& basis, cv::Point2f* finger );
 };
 
 #define MAX_FRAMES 100
@@ -80,7 +54,7 @@ struct Frame {
   bool is_pose_detected;
   std::vector<int> markerIds;
   std::vector<std::vector<cv::Point2f>> markerCorners;
-  PianoGeometry::PianoBasis piano_basis;
+  PianoCoordinateTransformer piano_coord;
   bool is_hand_tracking_finished = false;
   bool is_left_hand_found; 
   bool is_right_hand_found; 
@@ -102,6 +76,7 @@ class FramesData {
     void erase(void);
     Frame* get_frame(int index);    
     Frame* get_last_frame();
+    Frame* get_last_detected_frame();    
     void update_camera_fps(
       int frame_index,
       double camera_fps
@@ -112,6 +87,7 @@ class FramesData {
       bool is_pose_detected,
       std::vector<int> markerIds,
       std::vector<std::vector<cv::Point2f>> markerCorners,
+      PianoCoordinateTransformer piano_coord,
       double pose_fps
     );
     void update_hands(
@@ -123,7 +99,6 @@ class FramesData {
       cv::Point2f *right_hand,
       double hand_tracking_fps
     );
-    Frame* get_last_detected_frame();    
 };
 
 struct HandTrackingQueueElem {

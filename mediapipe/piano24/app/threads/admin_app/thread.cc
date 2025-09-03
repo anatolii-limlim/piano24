@@ -58,13 +58,18 @@ void admin_app_thread(
       }
 
       // KEYBOARD
-      cv::Scalar kbd_color = cv::Scalar(255, 0, 0);
-      cv::line(*(frame->mat), settings.ethalon_kbd_left_top, settings.ethalon_kbd_right_top,
-          kbd_color, 2, cv::LINE_8
-      );
-      cv::line(*(frame->mat), settings.ethalon_kbd_right_top, settings.ethalon_kbd_right_bottom,
-          kbd_color, 2, cv::LINE_8
-      );
+      if (frame->is_pose_detected) {
+        cv::Scalar kbd_color = cv::Scalar(255, 0, 0);
+        cv::Point2f p1, p2;
+
+        settings.piano_coord.kbdBasisToPixel(settings.ethalon_kbd_left_top, p1);
+        settings.piano_coord.kbdBasisToPixel(settings.ethalon_kbd_right_top, p2);
+        cv::line(*(frame->mat), p1, p2, kbd_color, 2, cv::LINE_8);
+
+        settings.piano_coord.kbdBasisToPixel(settings.ethalon_kbd_right_top, p1);
+        settings.piano_coord.kbdBasisToPixel(settings.ethalon_kbd_right_bottom, p2);
+        cv::line(*(frame->mat), p1, p2, kbd_color, 2, cv::LINE_8);
+      }
 
       // INFO
       std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";

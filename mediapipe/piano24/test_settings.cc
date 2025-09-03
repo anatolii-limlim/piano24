@@ -15,8 +15,5 @@ int main(int argc, char** argv) {
   Settings settings;
   settings.load_file(settings_path);
 
-  PianoGeometry piano_geometry;
-  piano_geometry.load_settings(settings);
-
   return 0;    
 }

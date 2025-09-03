@@ -100,11 +100,25 @@ void pose_detection_thread(
 
     if (is_pose_detected) {
       relative_search = true;
+
+      std::array<cv::Point2f, 3> markerCenters;
+      for (size_t i = 0; i < markerCorners.size(); ++i) {
+          const auto& corner = markerCorners[i];
+          cv::Point2f center(0, 0);
+          for (const auto& pt : corner) {
+            center += pt;
+          }
+          center *= (1.0f / corner.size());
+          markerCenters[i] = center;
+      }
+
+      settings.piano_coord.updateFrame(markerCenters);
     }
 
     frames_data.update_frame_pose(
       event.frame_index, true, is_pose_detected,
-      markerIds, markerCorners, fps.get_fps()
+      markerIds, markerCorners, PianoCoordinateTransformer(settings.piano_coord),
+      fps.get_fps()
     );
   }  
 }

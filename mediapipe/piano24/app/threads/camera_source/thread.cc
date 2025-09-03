@@ -12,10 +12,10 @@ absl::Status camera_source_thread(
   cv::Mat static_frame;
   
   const bool is_load_video = !settings.video_file_path.empty();
-  const bool is_static_frame = true || !settings.static_frame_path.empty();
+  const bool is_static_frame = !settings.static_frame_path.empty();
   
   if (is_static_frame) {
-    static_frame = cv::imread("mediapipe/piano24/docs/fp-10.jpg");
+    static_frame = cv::imread(settings.static_frame_path);
   } else {
     if (is_load_video) {
         capture.open(settings.video_file_path);
