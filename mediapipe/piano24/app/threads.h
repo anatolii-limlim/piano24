@@ -32,10 +32,10 @@ class Settings {
     std::string graph_config_path;
     std::string video_file_path;
     std::string static_frame_path;
-    std::string base_img_path;
-    cv::Point base_corner;
-    cv::Point base_left;
-    cv::Point base_bottom;
+    std::string ethalon_img_path;
+    cv::Point ethalon_kbd_left_top;
+    cv::Point ethalon_kbd_right_top;
+    cv::Point ethalon_kbd_right_bottom;
     int aruco_relative_max_d;
     int target_fps;
     int admin_app_fps;
@@ -169,8 +169,7 @@ void admin_app_thread(
   FramesData& frames_data
 );
 
-#define ARUCO_START 8
-#define ARUCO_END 47
+const std::array<int, 3> ARUCO_MARKERS = {8, 9, 47};
 
 class FPS {
   timespec start;

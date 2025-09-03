@@ -15,17 +15,17 @@ void Settings::load_file( std::string file_name ) {
     this->target_fps = settings["target_fps"].asInt();
     this->admin_app_fps = settings["admin_app_fps"].asInt();
     
-    this->base_img_path = settings["base_img_path"].asString();
-    this->base_corner = cv::Point(
-      settings["base_corner"][0].asInt(),
-      settings["base_corner"][1].asInt()
+    this->ethalon_img_path = settings["ethalon_img_path"].asString();
+    this->ethalon_kbd_left_top = cv::Point(
+      settings["ethalon_kbd_left_top"][0].asInt(),
+      settings["ethalon_kbd_left_top"][1].asInt()
     );
-    this->base_left = cv::Point(
-      settings["base_left"][0].asInt(),
-      settings["base_left"][1].asInt()
+    this->ethalon_kbd_right_top = cv::Point(
+      settings["ethalon_kbd_right_top"][0].asInt(),
+      settings["ethalon_kbd_right_top"][1].asInt()
     );
-    this->base_bottom = cv::Point(
-      settings["base_bottom"][0].asInt(),
-      settings["base_bottom"][1].asInt()
+    this->ethalon_kbd_right_bottom = cv::Point(
+      settings["ethalon_kbd_right_bottom"][0].asInt(),
+      settings["ethalon_kbd_right_bottom"][1].asInt()
     );
 }

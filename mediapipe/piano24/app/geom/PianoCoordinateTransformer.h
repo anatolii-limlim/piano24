@@ -4,6 +4,9 @@
 #include <opencv2/aruco.hpp>
 #include <array>
 
+#ifndef PIANO_COORDINATE_TRANSFORMER
+#define PIANO_COORDINATE_TRANSFORMER
+
 class PianoCoordinateTransformer {
 public:
     struct CornerCoords {
@@ -15,8 +18,8 @@ public:
     // Constructor: takes ethalon image and keyboard corners
     PianoCoordinateTransformer(const cv::Mat& ethalonImage, const CornerCoords& ethalonCorners);
 
-    // Update with new frame (detect markers and update current transform)
-    bool updateFrame(const cv::Mat& frame);
+    // Update with new frame (calculate affine from ethalon frame to this frame)
+    bool updateFrame(const std::array<cv::Point2f, 3>& markerPositions);
 
     // Convert from pixel coordinates to KBD_BASIS coordinates (u, v)
     // Returns false if transformation is not available
@@ -29,15 +32,9 @@ public:
     // Returns true if the last updateFrame successfully found all markers
     bool isValid() const { return valid_; }
 
-    // Optionally: get marker positions for debugging
-    std::array<cv::Point2f, 3> getLastMarkerPositions() const { return lastMarkerPositions_; }
-
 private:
     // Helper to detect ARUCO markers and get their centers
     bool detectMarkers(const cv::Mat& img, std::array<cv::Point2f, 3>& markerCenters);
-
-    // Calculate transformation from ethalon to current frame
-    bool calculateTransform();
 
     // ARUCO dictionary and marker IDs
     cv::Ptr<cv::aruco::Dictionary> dictionary_;
@@ -53,19 +50,8 @@ private:
     bool valid_ = false;
 
     // Homography from ethalon keyboard corners to current frame keyboard corners
-    cv::Mat keyboardHomography_; // 3x3
-
-    // Affine transform from pixel to KBD_BASIS in ethalon
-    cv::Mat ethalonAffine_; // 2x3
-
-    // Affine transform from pixel to KBD_BASIS in current frame
-    cv::Mat currentAffine_; // 2x3
-
-    // Inverse affine transforms
-    cv::Mat ethalonAffineInv_; // 2x3
-    cv::Mat currentAffineInv_; // 2x3
-
-    // Helper to build an affine matrix for basis
-    static cv::Mat getAffineTransform(const CornerCoords& corners);
-    static cv::Mat getInverseAffineTransform(const cv::Mat& affine);
+    cv::Mat keyboardAffine_; // 3x3
+    cv::Mat keyboardAffineInv_; // 3x3
 };
+
+#endif // PIANO_COORDINATE_TRANSFORMER

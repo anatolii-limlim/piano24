@@ -12,14 +12,16 @@ void admin_app_thread(
     Frame *frame = frames_data.get_last_detected_frame();
 
     if (frame != NULL) {
+      // ARUCO MARKERS
       for (auto markerCorners: frame->markerCorners) {
         std::vector<cv::Point> points;
         for (auto p: markerCorners) {
           points.push_back(cv::Point(int(p.x), int(p.y)));
         }
-        cv::polylines(*(frame->mat), points, true, cv::Scalar(0, 0, 255), 2);
+        cv::polylines(*(frame->mat), points, true, cv::Scalar(255, 0, 0), 2);
       }
 
+      // HANDS
       auto draw_hand = [](cv::Mat* frame, cv::Point2f* hand) {
         auto draw_line = [](cv::Mat* frame, cv::Point2f* hand, int i1, int i2) {
           cv::line(
@@ -28,7 +30,7 @@ void admin_app_thread(
             cv::Point(hand[i2].x * frame->cols, hand[i2].y * frame->rows),
             cv::Scalar(0, 255, 0),
             2,
-            cv::LINE_4
+            cv::LINE_8
           );
         };
         draw_line(frame, hand, HT_THUMB_1, HT_THUMB_2);
@@ -55,6 +57,16 @@ void admin_app_thread(
         draw_hand(frame->mat, frame->right_hand);
       }
 
+      // KEYBOARD
+      cv::Scalar kbd_color = cv::Scalar(255, 0, 0);
+      cv::line(*(frame->mat), settings.ethalon_kbd_left_top, settings.ethalon_kbd_right_top,
+          kbd_color, 2, cv::LINE_8
+      );
+      cv::line(*(frame->mat), settings.ethalon_kbd_right_top, settings.ethalon_kbd_right_bottom,
+          kbd_color, 2, cv::LINE_8
+      );
+
+      // INFO
       std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";
       std::string pose_str = "POSE: " + std::to_string(((int)frame->pose_fps)) + "fps";
       if (!frame->is_pose_detected) {

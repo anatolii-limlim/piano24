@@ -49,8 +49,10 @@ absl::Status camera_source_thread(
     // cv::Mat* camera_frame = new cv::Mat();
     // cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_BGR2RGB);
     // cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
-    cv::cvtColor(*camera_frame, *camera_frame, CV_BGR2GRAY);
-    cv::cvtColor(*camera_frame, *camera_frame, CV_GRAY2BGR);
+
+    // Grayscale image
+    // cv::cvtColor(*camera_frame, *camera_frame, CV_BGR2GRAY);
+    // cv::cvtColor(*camera_frame, *camera_frame, CV_GRAY2BGR);
 
     // if (is_load_video) {
     //   cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_RGBA2RGB);

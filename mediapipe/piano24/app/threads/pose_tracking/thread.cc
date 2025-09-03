@@ -5,6 +5,20 @@
 
 #include "../../threads.h"
 
+// Utility: get dict of markers to detect
+cv::Ptr<cv::aruco::Dictionary> get_aruco_dict(const std::array<int, 3>& desiredIds ) {
+    cv::Ptr<cv::aruco::Dictionary> baseDict = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
+    cv::Ptr<cv::aruco::Dictionary> customDict = cv::makePtr<cv::aruco::Dictionary>();
+    customDict->markerSize = baseDict->markerSize;
+    customDict->maxCorrectionBits = baseDict->maxCorrectionBits;
+
+    for (int id : desiredIds) {
+        customDict->bytesList.push_back(baseDict->bytesList.row(id));
+    }
+
+    return customDict;
+}
+
 void pose_detection_thread(
   Settings& settings,
   FramesData& frames_data,
@@ -15,21 +29,26 @@ void pose_detection_thread(
   std::vector<int> markerIds;
   std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
 
-  cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_4X4_50);
-  cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
+  cv::Ptr<cv::aruco::Dictionary> dict_all = get_aruco_dict(ARUCO_MARKERS);
+  std::vector<cv::Ptr<cv::aruco::Dictionary>> dicts_1;
 
-  cv::Mat image = cv::imread("mediapipe/piano24/docs/aruco0.png", 0);
+  for (int i = 0; i < ARUCO_MARKERS.size(); i++) {
+    dicts_1.push_back(get_aruco_dict({ARUCO_MARKERS[i]}));
+  }
+
+  cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
 
   while (true) {
     PoseDetectQueueElem event = q_pose.dequeue_all();
+
+    FPS fps;
+    
     Frame* frame = frames_data.get_frame(event.frame_index);
     if (frame == NULL) {
       continue;
     }
     cv::Mat camera_frame;    
 
-    FPS fps;
-    
     cv::cvtColor(*frame->mat, camera_frame, cv::COLOR_BGR2RGB);
 
     if (relative_search) {
@@ -42,9 +61,10 @@ void pose_detection_thread(
 
         std::vector<int> rMarkerIds;
         std::vector<std::vector<cv::Point2f>> rMarkerCorners, rRejectedCandidates;
-        cv::aruco::detectMarkers(camera_frame(bbox), dictionary, rMarkerCorners, rMarkerIds, parameters, rRejectedCandidates);
+        
+        cv::aruco::detectMarkers(camera_frame(bbox), dicts_1[i], rMarkerCorners, rMarkerIds, parameters, rRejectedCandidates);
 
-        if (rMarkerCorners.size() != 1 || rMarkerIds[0] != markerIds[i]) {
+        if (rMarkerCorners.size() != 1 || rMarkerIds[0] != 0) {
           relative_search = false;
           break;
         }
@@ -60,13 +80,23 @@ void pose_detection_thread(
       markerCorners.clear();
       rejectedCandidates.clear();
 
-      cv::aruco::detectMarkers(camera_frame, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
+      std::vector<int> rMarkerIds;
+      std::vector<std::vector<cv::Point2f>> rMarkerCorners, rRejectedCandidates;
+
+      cv::aruco::detectMarkers(camera_frame, dict_all, rMarkerCorners, rMarkerIds, parameters, rRejectedCandidates);
+
+      for (size_t i = 0; i < ARUCO_MARKERS.size(); ++i) {
+        for (size_t j = 0; j < rMarkerIds.size(); ++j) {
+            if (rMarkerIds[j] == i) {
+                markerIds.push_back(ARUCO_MARKERS[i]);
+                markerCorners.push_back(rMarkerCorners[j]);
+                break;
+            }
+        }
+      }
     }
 
-    int start_count = std::count(markerIds.begin(), markerIds.end(), ARUCO_START);
-    int end_count = std::count(markerIds.begin(), markerIds.end(), ARUCO_END);
-    
-    bool is_pose_detected = start_count == 1 && end_count == 1;
+    bool is_pose_detected = markerIds.size() == ARUCO_MARKERS.size();
 
     if (is_pose_detected) {
       relative_search = true;
