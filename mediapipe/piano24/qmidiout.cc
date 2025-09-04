@@ -5,6 +5,8 @@
  
 int main()
 {
+  std::cout << "Midi out test START\n";
+
   RtMidiOut *midiout = new RtMidiOut();
   std::vector<unsigned char> message;
  
@@ -48,6 +50,8 @@ int main()
   // Clean up
  cleanup:
   delete midiout;
+
+  std::cout << "Midi out test END\n";
  
   return 0;
 }

@@ -30,6 +30,14 @@ void PianoCoordinateTransformer::updateFrame(const std::array<cv::Point2f, 3>& m
 
     keyboardAffine_.convertTo(keyboardAffine_, CV_32F);
     keyboardAffineInv_.convertTo(keyboardAffineInv_, CV_32F);
+
+    // std::cout << "keyboardAffine_ matrix:" << std::endl;
+    // for (int i = 0; i < keyboardAffine_.rows; ++i) {
+    //   for (int j = 0; j < keyboardAffine_.cols; ++j) {
+    //     std::cout << keyboardAffine_.at<float>(i, j) << " ";
+    //   }
+    //   std::cout << std::endl;
+    // }
 }
 
 void PianoCoordinateTransformer::kbdBasisToPixel(const cv::Point2f& kbdCoords, cv::Point2f& pixel) const {
@@ -38,10 +46,25 @@ void PianoCoordinateTransformer::kbdBasisToPixel(const cv::Point2f& kbdCoords, c
         return;
     }
 
-    cv::Mat src = (cv::Mat_<float>(1, 3) << kbdCoords.x, kbdCoords.y, 1.0f);
-    cv::Mat dst = keyboardAffine_ * src.t();
-    pixel.x = dst.at<float>(0, 0);
-    pixel.y = dst.at<float>(1, 0);
+    cv::Mat src;
+
+    try {
+      src = (cv::Mat_<float>(1, 3) << kbdCoords.x, kbdCoords.y, 1.0f);
+
+      // std::cout << "kbdCoords type: CV_32F (cv::Point2f)" << std::endl;
+      // std::cout << "keyboardAffine_ type: " << src.type() << " (CV_32F=" << CV_32F << ")" << std::endl;
+      // std::cout << "keyboardAffine_ type: " << keyboardAffine_.type() << " (CV_32F=" << CV_32F << ")" << std::endl;    
+
+      cv::Mat dst = keyboardAffine_ * src.t();
+      pixel.x = dst.at<float>(0, 0);
+      pixel.y = dst.at<float>(1, 0);
+
+      // pixel = kbdCoords;
+    }
+    catch (const cv::Exception& e) {
+      std::cout << "Caught cv::Exception: " << e.what() << std::endl;
+      return;
+    }
 }
 
 

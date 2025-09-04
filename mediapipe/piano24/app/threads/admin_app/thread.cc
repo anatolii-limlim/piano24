@@ -75,7 +75,7 @@ void admin_app_thread(
       std::string camera_str = "CAMERA: " + std::to_string(((int)frame->camera_fps)) + "fps";
       std::string pose_str = "POSE: " + std::to_string(((int)frame->pose_fps)) + "fps";
       if (!frame->is_pose_detected) {
-        pose_str += " NOT_DETECTED";
+        pose_str += " NOT FOUND";
       }
       std::string hands_str = "HANDS: " + std::to_string(((int)frame->hand_tracking_fps)) + "fps";
       if (frame->is_left_hand_found) {
@@ -90,8 +90,12 @@ void admin_app_thread(
       cv::putText(*(frame->mat), hands_str, cv::Point(10, 105), cv::FONT_HERSHEY_DUPLEX, 1.0, CV_RGB(0, 0, 255), 2);
 
       cv::imshow("Piano24", *(frame->mat));
-      cv::waitKey(1);
+      int key = cv::waitKey(1);
       step_i++;
+
+      if (key == 'q' || key == 'Q') {
+        std::cout << "'q' pressed. Quitting..." << std::endl;
+      } 
     }
 
     double sleep_t = (1.0 / settings.admin_app_fps - (clock() - start_time) / CLOCKS_PER_SEC) * 1000000;

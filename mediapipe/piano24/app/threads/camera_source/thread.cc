@@ -25,6 +25,8 @@ absl::Status camera_source_thread(
     RET_CHECK(capture.isOpened());
   }
 
+  cv::Mat aruco_set_img = cv::imread("mediapipe/piano24/docs/aruco_set.png");
+
   ABSL_LOG(INFO) << "Start grabbing and processing frames.";
   while (true) 
   {
@@ -48,7 +50,15 @@ absl::Status camera_source_thread(
 
     // cv::Mat* camera_frame = new cv::Mat();
     // cv::cvtColor(*camera_frame, *camera_frame, cv::COLOR_BGR2RGB);
-    // cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
+    cv::flip(*camera_frame, *camera_frame, /*flipcode=HORIZONTAL*/ 1);
+    
+    cv::Rect roi(
+      camera_frame->cols - aruco_set_img.cols - 20,
+      20,
+      aruco_set_img.cols,
+      aruco_set_img.rows
+    );
+    aruco_set_img.copyTo((*camera_frame)(roi));
 
     // Grayscale image
     // cv::cvtColor(*camera_frame, *camera_frame, CV_BGR2GRAY);
