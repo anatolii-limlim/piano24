@@ -9,8 +9,6 @@ void Settings::load_file( std::string file_name ) {
     settings_file >> settings;
 
     this->graph_config_path = settings["graph_config_path"].asString();
-    this->video_file_path = settings["video_file_path"].asString();
-    this->static_frame_path = settings["static_frame_path"].asString();
     this->aruco_relative_max_d = settings["aruco_relative_max_d"].asInt();
     this->target_fps = settings["target_fps"].asInt();
     this->admin_app_fps = settings["admin_app_fps"].asInt();
@@ -37,4 +35,9 @@ void Settings::load_file( std::string file_name ) {
         cv::Point2f(this->ethalon_kbd_right_bottom)
       }
     );
+
+    // development settings
+    this->video_file_path = settings["video_file_path"].asString();
+    this->static_frame_path = settings["static_frame_path"].asString();
+    this->emulate_midi_source = settings["emulate_midi_source"].asBool();;
 }

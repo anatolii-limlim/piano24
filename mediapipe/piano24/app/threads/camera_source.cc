@@ -1,4 +1,4 @@
-#include "../../threads.h"
+#include "../threads.h"
 
 absl::Status camera_source_thread(
   Settings& settings,

@@ -3,7 +3,7 @@
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/dictionary.hpp>
 
-#include "../../threads.h"
+#include "../threads.h"
 
 // Utility: get dict of markers to detect
 cv::Ptr<cv::aruco::Dictionary> get_aruco_dict(const std::array<int, 3>& desiredIds ) {
@@ -22,7 +22,8 @@ cv::Ptr<cv::aruco::Dictionary> get_aruco_dict(const std::array<int, 3>& desiredI
 void pose_detection_thread(
   Settings& settings,
   FramesData& frames_data,
-  SafeQueue<PoseDetectQueueElem>& q_pose
+  SafeQueue<PoseDetectQueueElem>& q_pose,
+  SafeQueue<CvFusionQueueElem>& q_cv_fusion
 ) {
   bool relative_search = false;
 

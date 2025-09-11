@@ -1,12 +1,14 @@
 {
   "graph_config_path": "mediapipe/piano24/hand_tracking_desktop_live_gpu.pbtxt",
-  "video_file_path": "",
-  "static_frame_path": "",
   "ethalon_img_path": "mediapipe/piano24/docs/fp-10.jpg",
   "ethalon_kbd_left_top": [130, 267],
   "ethalon_kbd_right_top": [1470, 267],
   "ethalon_kbd_right_bottom": [1470, 434],
   "aruco_relative_max_d": 30,
   "target_fps": 240,
-  "admin_app_fps": 24
+  "admin_app_fps": 24,
+
+  "video_file_path": "",
+  "static_frame_path": "",
+  "emulate_midi_source": false
 }

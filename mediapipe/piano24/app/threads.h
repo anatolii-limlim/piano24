@@ -30,8 +30,6 @@ int app_main(int argc, char** argv);
 class Settings {
   public:
     std::string graph_config_path;
-    std::string video_file_path;
-    std::string static_frame_path;
     std::string ethalon_img_path;
     cv::Point ethalon_kbd_left_top;
     cv::Point ethalon_kbd_right_top;
@@ -40,6 +38,11 @@ class Settings {
     int target_fps;
     int admin_app_fps;
     PianoCoordinateTransformer piano_coord;
+    
+    // development settings
+    std::string video_file_path;
+    std::string static_frame_path;
+    bool emulate_midi_source;
 
     void load_file( std::string file_name );    
 };
@@ -101,6 +104,20 @@ class FramesData {
     );
 };
 
+struct MidiInData {
+  unsigned char byte0, byte1, byte2;
+};
+struct PedalData {
+  bool left_hand;
+  bool right_hand;
+};
+struct HandsData {
+  bool is_left_hand_found;
+  bool is_right_hand_found;
+  cv::Point2f left_hand;
+  cv::Point2f right_hand;
+};
+
 struct HandTrackingQueueElem {
   int frame_index;
 };
@@ -109,35 +126,73 @@ struct PoseDetectQueueElem {
   int frame_index;
 };
 
-enum MidiEmitterQueueElemType { MidiIn, Pitch };
-
-struct MidiEmitterQueueElem {
-  MidiEmitterQueueElemType type; 
-
-  // if type == MidiIn
-  unsigned char byte0, byte1, byte2;
-  // if type == Pitch
-  unsigned char note;
-  double pitch;
+struct CvFusionQueueElem {
+  int frame_index;
 };
 
-void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
-void midi_emitter_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter );
+struct InputProcessingQueueElem {
+  enum Type { MidiIn, Hands, Pedal };
+
+  Type type;
+
+  MidiInData midi_in;
+  HandsData hands;
+  PedalData pedal;
+};
+
+struct MidiEmitterQueueElem {
+  enum Type { MidiIn, X0, X1 };
+
+  Type type; 
+
+  MidiInData midi_in;
+
+  unsigned char note;
+  double x0;
+  double x1;
+};
+
+void midi_source_thread(
+  Settings& settings,
+  SafeQueue<InputProcessingQueueElem>& q_input_processing
+);
 absl::Status camera_source_thread(
   Settings& settings,
   FramesData& frames_data,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
   SafeQueue<PoseDetectQueueElem>& q_pose
 );
+void pedal_source_thread(
+  Settings& settings,
+  SafeQueue<InputProcessingQueueElem>& q_input_processing
+);
 absl::Status hand_tracking_thread(
   Settings& settings,
   FramesData& frames_data,
-  SafeQueue<HandTrackingQueueElem>& q_hand_tracking
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
+  SafeQueue<CvFusionQueueElem>& q_cv_fusion
 );
 void pose_detection_thread(
   Settings& settings,
   FramesData& frames_data,
-  SafeQueue<PoseDetectQueueElem>& q_pose
+  SafeQueue<PoseDetectQueueElem>& q_pose,
+  SafeQueue<CvFusionQueueElem>& q_cv_fusion
+);
+void cv_fusion_thread(
+  Settings& settings,
+  FramesData& frames_data,
+  SafeQueue<CvFusionQueueElem>& q_cv_fusion,
+  SafeQueue<InputProcessingQueueElem>& q_input_processing
+);
+void input_processing_thread(
+  Settings& settings,
+  FramesData& frames_data,
+  SafeQueue<InputProcessingQueueElem>& q_input_processing,
+  SafeQueue<MidiEmitterQueueElem>& q_midi_emitter
+);
+void midi_emitter_thread(
+  Settings& settings,
+  SafeQueue<MidiEmitterQueueElem>& q_midi_emitter
 );
 void admin_app_thread(
   Settings& settings,

@@ -1,4 +1,4 @@
-#include "../../threads.h"
+#include "../threads.h"
 
 void admin_app_thread(
   Settings& settings,
@@ -95,6 +95,7 @@ void admin_app_thread(
 
       if (key == 'q' || key == 'Q') {
         std::cout << "'q' pressed. Quitting..." << std::endl;
+        break;
       } 
     }
 

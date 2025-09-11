@@ -4,7 +4,7 @@
 #include "mediapipe/gpu/gpu_buffer.h"
 #include "mediapipe/gpu/gpu_shared_data_internal.h"
 
-#include "../../threads.h"
+#include "../threads.h"
 
 constexpr char kInputStream[] = "input_video";
 constexpr char kOutputStream[] = "output_video";
@@ -12,7 +12,8 @@ constexpr char kOutputStream[] = "output_video";
 absl::Status hand_tracking_thread(
   Settings& settings,
   FramesData& frames_data,
-  SafeQueue<HandTrackingQueueElem>& q_hand_tracking
+  SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
+  SafeQueue<CvFusionQueueElem>& q_cv_fusion
 ) {
   ABSL_LOG(INFO) << "Hand tracking start, graph: " << settings.graph_config_path;
 

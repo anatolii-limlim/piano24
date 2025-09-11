@@ -3,10 +3,10 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include "../../../rtmidi/RtMidi.h"
-#include "../../threads.h"
+#include "../../rtmidi/RtMidi.h"
+#include "../threads.h"
  
-void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter )
+void midi_source_prod( Settings& settings, SafeQueue<InputProcessingQueueElem>& q_input_processing )
 {
   RtMidiIn *midiin = new RtMidiIn();
   std::vector<unsigned char> message;
@@ -36,8 +36,11 @@ void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter )
       if ( nBytes > 0 )
         std::cout << "stamp = " << stamp << std::endl;
   
-      MidiEmitterQueueElem elem { type: MidiIn, byte0: message[0], byte1: message[1], byte2: message[2] };
-      q_midi_emitter.enqueue(elem);
+      InputProcessingQueueElem elem {
+        type: InputProcessingQueueElem::MidiIn,
+        midi_in: MidiInData { byte0: message[0], byte1: message[1], byte2: message[2] }
+      };
+      q_input_processing.enqueue(elem);
     }
 
     // Sleep for 1/2 millisecond ... platform-dependent.
@@ -48,3 +51,18 @@ void midi_source_thread( SafeQueue<MidiEmitterQueueElem>& q_midi_emitter )
  cleanup:
   delete midiin;
 }
+
+void midi_source_dev( Settings& settings, SafeQueue<InputProcessingQueueElem>& q_input_processing )
+{
+
+}
+
+void midi_source_thread( Settings& settings, SafeQueue<InputProcessingQueueElem>& q_input_processing )
+{
+  if (settings.emulate_midi_source) {
+    midi_source_dev(settings, q_input_processing);
+  } else {
+    midi_source_prod(settings, q_input_processing);
+  }
+}
+
