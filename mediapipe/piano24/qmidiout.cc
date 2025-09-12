@@ -22,7 +22,7 @@ int main()
  
   // Send out a series of MIDI messages.
  
-  // Program change: 192, 5
+  // Program change: 192, 0
   message.push_back( 192 );
   message.push_back( 0 );
   midiout->sendMessage( &message );

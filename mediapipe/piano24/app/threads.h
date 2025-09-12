@@ -156,15 +156,15 @@ void midi_source_thread(
   Settings& settings,
   SafeQueue<InputProcessingQueueElem>& q_input_processing
 );
+void pedal_source_thread(
+  Settings& settings,
+  SafeQueue<InputProcessingQueueElem>& q_input_processing
+);
 absl::Status camera_source_thread(
   Settings& settings,
   FramesData& frames_data,
   SafeQueue<HandTrackingQueueElem>& q_hand_tracking,
   SafeQueue<PoseDetectQueueElem>& q_pose
-);
-void pedal_source_thread(
-  Settings& settings,
-  SafeQueue<InputProcessingQueueElem>& q_input_processing
 );
 absl::Status hand_tracking_thread(
   Settings& settings,
@@ -186,7 +186,6 @@ void cv_fusion_thread(
 );
 void input_processing_thread(
   Settings& settings,
-  FramesData& frames_data,
   SafeQueue<InputProcessingQueueElem>& q_input_processing,
   SafeQueue<MidiEmitterQueueElem>& q_midi_emitter
 );

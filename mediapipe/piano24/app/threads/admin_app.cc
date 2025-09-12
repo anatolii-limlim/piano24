@@ -93,10 +93,10 @@ void admin_app_thread(
       int key = cv::waitKey(1);
       step_i++;
 
-      if (key == 'q' || key == 'Q') {
+      if (key == 27 || key == 'q' || key == 'Q') {
         std::cout << "'q' pressed. Quitting..." << std::endl;
         break;
-      } 
+      }
     }
 
     double sleep_t = (1.0 / settings.admin_app_fps - (clock() - start_time) / CLOCKS_PER_SEC) * 1000000;

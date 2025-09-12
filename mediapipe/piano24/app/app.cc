@@ -28,17 +28,17 @@ int app_main(int argc, char** argv) {
     std::ref(settings),
     std::ref(q_input_processing)
   );
+  std::thread t_pedal_source(
+    pedal_source_thread,
+    std::ref(settings),
+    std::ref(q_input_processing)
+  );
   std::thread t_camera_source(
     camera_source_thread,
     std::ref(settings),
     std::ref(frames_data),
     std::ref(q_hand_tracking),
     std::ref(q_pose)
-  );
-  std::thread t_pedal_source(
-    pedal_source_thread,
-    std::ref(settings),
-    std::ref(q_input_processing)
   );
   std::thread t_hand_tracking(
     hand_tracking_thread,
@@ -64,7 +64,6 @@ int app_main(int argc, char** argv) {
   std::thread t_input_processing(
     input_processing_thread,
     std::ref(settings),
-    std::ref(frames_data),
     std::ref(q_input_processing),
     std::ref(q_midi_emitter)
   );
