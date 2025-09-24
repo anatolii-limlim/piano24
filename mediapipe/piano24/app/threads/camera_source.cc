@@ -20,14 +20,24 @@ absl::Status camera_source_thread(
     if (is_load_video) {
         capture.open(settings.video_file_path);
     } else {
-        capture.open(0);
+      // capture.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G'));
+      // capture.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
+      // capture.set(cv::CAP_PROP_FRAME_HEIGHT, 1080);
+      // capture.set(cv::CAP_PROP_FPS, 120);
+      // capture.open("v4l2src device=/dev/video2 ! "
+      //                "image/jpeg, width=640, height=480, framerate=120/1 ! "
+      //                "jpegdec ! videoconvert ! appsink",
+      //                cv::CAP_GSTREAMER);
+      capture.open(2);
     }
+    std::cout << "############################## " << capture.isOpened() << std::endl;
     RET_CHECK(capture.isOpened());
   }
 
   cv::Mat aruco_set_img = cv::imread("mediapipe/piano24/docs/aruco_set.png");
 
   ABSL_LOG(INFO) << "Start grabbing and processing frames.";
+
   while (true) 
   {
     FPS fps;

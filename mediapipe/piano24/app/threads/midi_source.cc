@@ -69,6 +69,7 @@ void midi_source_dev( Settings& settings, SafeQueue<InputProcessingQueueElem>& q
   send_midi_data(q_input_processing, 176, 7, 100);
 
   while (true) {
+    std::cout << "Emulate MIDI events..." << std::endl;
     // note on: E3, G5
     send_midi_data(q_input_processing, 144, 52, 60);
     send_midi_data(q_input_processing, 144, 79, 90);

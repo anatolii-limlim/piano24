@@ -73,7 +73,7 @@ if [ -z "$1" ]
           -DBUILD_opencv_structured_light=OFF -DBUILD_opencv_surface_matching=OFF \
           -DBUILD_opencv_world=OFF -DBUILD_opencv_xobjdetect=OFF -DBUILD_opencv_xphoto=OFF \
           -DCV_ENABLE_INTRINSICS=ON -DWITH_EIGEN=ON -DWITH_PTHREADS=ON -DWITH_PTHREADS_PF=ON \
-          -DWITH_JPEG=ON -DWITH_PNG=ON -DWITH_TIFF=ON
+          -DWITH_JPEG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DWITH_GSTREAMER=ON
     make -j 16
     sudo make install
     rm -rf /tmp/build_opencv

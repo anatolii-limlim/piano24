@@ -43,7 +43,7 @@ void FramesData::get_available_keys(std::vector<int>& keys) {
 }
 
 Frame* FramesData::get_last_frame() {
-  std::lock_guard<std::mutex> lock(this->m);
+  std::lock_guard<std::mutex> lock(this->m);  
 
   std::vector<int> keys;
   this->get_available_keys(keys);

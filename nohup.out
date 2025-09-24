@@ -1,0 +1,99 @@
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+jackdmp 1.9.20
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2016 Grame.
+Copyright 2016-2021 Filipe Coelho.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1|hw:1|256|2|44100|0|0|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 256 frames (5.8 ms), buffer = 2 periods
+ALSA: final selected sample format for capture: 32bit integer little-endian
+ALSA: use 2 periods for capture
+ALSA: final selected sample format for playback: 32bit integer little-endian
+ALSA: use 2 periods for playback
+JackEngine::XRun: client = fluidsynth was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = fluidsynth was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = fluidsynth was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = fluidsynth was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+Cannot write socket fd = 18 err = Broken pipe
+CheckRes error
+Could not write notification
+ClientNotify fails name = fluidsynth notification = 10 val1 = 5 val2 = 0
+Cannot write socket fd = 18 err = Broken pipe
+CheckRes error
+Could not write notification
+ClientNotify fails name = fluidsynth notification = 10 val1 = 6 val2 = 0
+Cannot write socket fd = 18 err = Broken pipe
+CheckRes error
+Could not write notification
+ClientNotify fails name = fluidsynth notification = 10 val1 = 5 val2 = 0
+Cannot write socket fd = 18 err = Broken pipe
+CheckRes error
+Could not write notification
+ClientNotify fails name = fluidsynth notification = 10 val1 = 6 val2 = 0
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+`default' server already active
+Failed to open server
+jackdmp 1.9.20
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2016 Grame.
+Copyright 2016-2021 Filipe Coelho.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+jackdmp 1.9.20
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2016 Grame.
+Copyright 2016-2021 Filipe Coelho.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1|hw:1|256|2|44100|0|0|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 256 frames (5.8 ms), buffer = 2 periods
+ALSA: final selected sample format for capture: 32bit integer little-endian
+ALSA: use 2 periods for capture
+ALSA: final selected sample format for playback: 32bit integer little-endian
+ALSA: use 2 periods for playback
+Jack main caught signal 15
+Released audio card Audio1
+audio_reservation_finish
+no message buffer overruns
+no message buffer overruns
+no message buffer overruns
+jackdmp 1.9.20
+Copyright 2001-2005 Paul Davis and others.
+Copyright 2004-2016 Grame.
+Copyright 2016-2021 Filipe Coelho.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio1
+creating alsa driver ... hw:1|hw:1|256|2|44100|0|0|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 256 frames (5.8 ms), buffer = 2 periods
+ALSA: final selected sample format for capture: 32bit integer little-endian
+ALSA: use 2 periods for capture
+ALSA: final selected sample format for playback: 32bit integer little-endian
+ALSA: use 2 periods for playback
