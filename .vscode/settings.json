@@ -88,5 +88,6 @@
       "*.expression": "cpp",
       "alignedvector3": "cpp",
       "fft": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/epq/workspace/mediapipe/mediapipe/piano24/rtmidi"
 }

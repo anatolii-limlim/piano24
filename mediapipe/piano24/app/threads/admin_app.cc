@@ -94,8 +94,16 @@ void admin_app_thread(
       step_i++;
 
       if (key == 27 || key == 'q' || key == 'Q') {
-        std::cout << "'q' pressed. Quitting..." << std::endl;
+        std::cout << "Quitting..." << std::endl;
         break;
+      }
+
+      if (key == 'e' || key == 'E') {
+        std::cout << "LEFT PEDAL" << std::endl;
+      }
+
+      if (key == 'r' || key == 'R') {
+        std::cout << "RIGHT PEDAL" << std::endl;
       }
     }
 

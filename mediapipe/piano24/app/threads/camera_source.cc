@@ -28,7 +28,7 @@ absl::Status camera_source_thread(
       //                "image/jpeg, width=640, height=480, framerate=120/1 ! "
       //                "jpegdec ! videoconvert ! appsink",
       //                cv::CAP_GSTREAMER);
-      capture.open(2);
+      capture.open(0); // 2
     }
     std::cout << "############################## " << capture.isOpened() << std::endl;
     RET_CHECK(capture.isOpened());
